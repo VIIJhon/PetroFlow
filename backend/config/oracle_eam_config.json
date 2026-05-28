@@ -1,0 +1,336 @@
+{
+  "_comment": "PetroFlow Oracle EAM Integration Configuration",
+  "_description": "Configuration for Oracle Enterprise Asset Management Cloud integration",
+  
+  "connection": {
+    "enabled": true,
+    "base_url": "https://your-instance.oraclecloud.com",
+    "organization_id": "ORG123",
+    "timeout_seconds": 30,
+    "verify_ssl": true,
+    "description": "Oracle EAM Cloud production instance"
+  },
+  
+  "authentication": {
+    "type": "basic",
+    "username": "${ORACLE_EAM_USER}",
+    "password": "${ORACLE_EAM_PASSWORD}",
+    "oauth_token_url": null,
+    "client_id": null,
+    "client_secret": null,
+    "api_token": null,
+    "scope": "eam:all"
+  },
+  
+  "api_endpoints": {
+    "assets": "/fscmRestApi/resources/11.13.18.05/assets",
+    "work_requests": "/fscmRestApi/resources/11.13.18.05/workRequests",
+    "work_orders": "/fscmRestApi/resources/11.13.18.05/workOrders",
+    "maintenance_schedules": "/fscmRestApi/resources/11.13.18.05/maintenanceSchedules",
+    "inventory_items": "/fscmRestApi/resources/11.13.18.05/inventoryItems",
+    "asset_groups": "/fscmRestApi/resources/11.13.18.05/assetGroups",
+    "locations": "/fscmRestApi/resources/11.13.18.05/locations",
+    "work_definitions": "/fscmRestApi/resources/11.13.18.05/workDefinitions",
+    "preventive_maintenance": "/fscmRestApi/resources/11.13.18.05/preventiveMaintenance"
+  },
+  
+  "asset_configuration": {
+    "default_status": "ACTIVE",
+    "auto_create_hierarchy": true,
+    "sync_parent_child_relationships": true,
+    "track_location_changes": true,
+    "enable_asset_meters": true,
+    "meter_reading_frequency_days": 7
+  },
+  
+  "asset_groups": {
+    "PUMPS": {
+      "description": "Centrifugal and Positive Displacement Pumps",
+      "default_maintenance_strategy": "PREVENTIVE",
+      "criticality": "HIGH"
+    },
+    "COMPRESSORS": {
+      "description": "Gas Compressors",
+      "default_maintenance_strategy": "PREDICTIVE",
+      "criticality": "CRITICAL"
+    },
+    "VALVES": {
+      "description": "Control and Isolation Valves",
+      "default_maintenance_strategy": "CORRECTIVE",
+      "criticality": "MEDIUM"
+    },
+    "TURBINES": {
+      "description": "Gas Turbines",
+      "default_maintenance_strategy": "PREVENTIVE",
+      "criticality": "CRITICAL"
+    },
+    "VESSELS": {
+      "description": "Pressure Vessels and Separators",
+      "default_maintenance_strategy": "PREVENTIVE",
+      "criticality": "HIGH"
+    }
+  },
+  
+  "work_request_configuration": {
+    "default_priority": "3",
+    "auto_approve_low_priority": false,
+    "require_approval_for_high_priority": true,
+    "default_work_type": "CORRECTIVE",
+    "enable_mobile_work_requests": true
+  },
+  
+  "work_types": {
+    "CORRECTIVE": {
+      "description": "Corrective Maintenance",
+      "default_priority": "2",
+      "sla_hours": 24,
+      "auto_create_work_order": true
+    },
+    "PREVENTIVE": {
+      "description": "Preventive Maintenance",
+      "default_priority": "3",
+      "sla_hours": 168,
+      "auto_create_work_order": true
+    },
+    "PREDICTIVE": {
+      "description": "Predictive Maintenance",
+      "default_priority": "3",
+      "sla_hours": 72,
+      "auto_create_work_order": false
+    },
+    "INSPECTION": {
+      "description": "Inspection",
+      "default_priority": "4",
+      "sla_hours": 336,
+      "auto_create_work_order": false
+    },
+    "EMERGENCY": {
+      "description": "Emergency Repair",
+      "default_priority": "1",
+      "sla_hours": 4,
+      "auto_create_work_order": true
+    }
+  },
+  
+  "priority_mapping": {
+    "1": {
+      "description": "Critical",
+      "color": "red",
+      "sla_hours": 4,
+      "escalation_enabled": true,
+      "escalation_hours": 2
+    },
+    "2": {
+      "description": "High",
+      "color": "orange",
+      "sla_hours": 24,
+      "escalation_enabled": true,
+      "escalation_hours": 12
+    },
+    "3": {
+      "description": "Medium",
+      "color": "yellow",
+      "sla_hours": 72,
+      "escalation_enabled": false,
+      "escalation_hours": null
+    },
+    "4": {
+      "description": "Low",
+      "color": "green",
+      "sla_hours": 168,
+      "escalation_enabled": false,
+      "escalation_hours": null
+    }
+  },
+  
+  "status_mapping": {
+    "asset_status": {
+      "ACTIVE": "In Service",
+      "INACTIVE": "Out of Service",
+      "IN_SERVICE": "Operating",
+      "OUT_OF_SERVICE": "Shutdown",
+      "UNDER_MAINTENANCE": "Maintenance",
+      "RETIRED": "Decommissioned"
+    },
+    "work_request_status": {
+      "DRAFT": "Draft",
+      "SUBMITTED": "Submitted",
+      "APPROVED": "Approved",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed",
+      "CLOSED": "Closed",
+      "CANCELLED": "Cancelled"
+    }
+  },
+  
+  "synchronization": {
+    "enabled": true,
+    "sync_interval_minutes": 15,
+    "sync_assets": true,
+    "sync_work_requests": true,
+    "sync_work_orders": true,
+    "sync_maintenance_schedules": true,
+    "sync_inventory": false,
+    "batch_size": 100,
+    "max_retries": 3,
+    "retry_delay_seconds": 60,
+    "incremental_sync": true,
+    "full_sync_interval_hours": 24
+  },
+  
+  "field_mapping": {
+    "asset": {
+      "petroflow_field": "oracle_field",
+      "asset_id": "AssetId",
+      "asset_number": "AssetNumber",
+      "description": "Description",
+      "asset_group": "AssetGroup",
+      "status": "AssetStatus",
+      "location": "Location",
+      "parent_asset": "ParentAssetNumber",
+      "manufacturer": "Manufacturer",
+      "model": "Model",
+      "serial_number": "SerialNumber"
+    },
+    "work_request": {
+      "request_id": "WorkRequestId",
+      "request_number": "WorkRequestNumber",
+      "asset_number": "AssetNumber",
+      "description": "Description",
+      "priority": "Priority",
+      "status": "Status",
+      "work_type": "WorkType",
+      "requested_start": "RequestedStartDate",
+      "requested_end": "RequestedEndDate"
+    }
+  },
+  
+  "inventory_management": {
+    "enabled": false,
+    "sync_spare_parts": false,
+    "track_inventory_levels": false,
+    "auto_create_purchase_requests": false,
+    "minimum_stock_alerts": false
+  },
+  
+  "preventive_maintenance": {
+    "enabled": true,
+    "auto_generate_schedules": true,
+    "schedule_horizon_days": 90,
+    "auto_create_work_requests": true,
+    "notification_days_before": 7,
+    "meter_based_pm_enabled": true
+  },
+  
+  "error_handling": {
+    "retry_on_connection_error": true,
+    "max_retries": 3,
+    "retry_delay_seconds": 5,
+    "exponential_backoff": true,
+    "backoff_multiplier": 2,
+    "max_retry_delay_seconds": 60,
+    "log_errors": true,
+    "alert_on_critical_errors": true,
+    "fallback_to_queue": true
+  },
+  
+  "performance": {
+    "connection_pool_size": 10,
+    "request_timeout_seconds": 30,
+    "batch_operations": true,
+    "use_compression": true,
+    "cache_metadata": true,
+    "cache_ttl_seconds": 3600,
+    "parallel_requests": false,
+    "max_parallel_requests": 5
+  },
+  
+  "security": {
+    "encrypt_credentials": true,
+    "use_ssl": true,
+    "verify_ssl_certificates": true,
+    "certificate_path": null,
+    "allowed_ip_ranges": [],
+    "audit_all_operations": true,
+    "mask_sensitive_data": true
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "log_all_requests": false,
+    "log_errors_only": true,
+    "metrics_enabled": true,
+    "health_check_interval_seconds": 60,
+    "alert_on_connection_failure": true,
+    "track_api_performance": true,
+    "performance_threshold_ms": 5000
+  },
+  
+  "data_validation": {
+    "validate_asset_numbers": true,
+    "validate_work_request_types": true,
+    "validate_priority_values": true,
+    "validate_dates": true,
+    "validate_required_fields": true,
+    "strict_mode": false
+  },
+  
+  "integration_rules": {
+    "auto_create_work_requests_from_alerts": true,
+    "auto_create_work_requests_from_predictions": true,
+    "sync_completion_status_to_petroflow": true,
+    "update_asset_status_on_work_completion": true,
+    "create_petroflow_tasks_from_oracle_operations": false,
+    "bidirectional_sync": true
+  },
+  
+  "notification_settings": {
+    "enabled": true,
+    "notify_on_work_request_creation": true,
+    "notify_on_work_request_approval": true,
+    "notify_on_work_completion": true,
+    "notify_on_overdue_work": true,
+    "notification_channels": ["email", "webhook"],
+    "webhook_url": null
+  },
+  
+  "custom_attributes": {
+    "asset": {
+      "petroflow_asset_type": "PETROFLOW_ASSET_TYPE",
+      "petroflow_criticality": "PETROFLOW_CRITICALITY",
+      "petroflow_location": "PETROFLOW_LOCATION",
+      "petroflow_alert_id": "PETROFLOW_ALERT_ID",
+      "petroflow_prediction_id": "PETROFLOW_PREDICTION_ID"
+    },
+    "work_request": {
+      "petroflow_alert_id": "PETROFLOW_ALERT_ID",
+      "petroflow_prediction_id": "PETROFLOW_PREDICTION_ID",
+      "petroflow_task_id": "PETROFLOW_TASK_ID"
+    }
+  },
+  
+  "environments": {
+    "development": {
+      "base_url": "https://dev-instance.oraclecloud.com",
+      "organization_id": "DEV_ORG",
+      "enabled": true
+    },
+    "staging": {
+      "base_url": "https://staging-instance.oraclecloud.com",
+      "organization_id": "STAGING_ORG",
+      "enabled": true
+    },
+    "production": {
+      "base_url": "https://prod-instance.oraclecloud.com",
+      "organization_id": "PROD_ORG",
+      "enabled": true
+    }
+  },
+  
+  "rate_limiting": {
+    "enabled": true,
+    "requests_per_minute": 100,
+    "burst_limit": 150,
+    "respect_retry_after_header": true
+  }
+}

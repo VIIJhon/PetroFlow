@@ -1,0 +1,314 @@
+{
+  "equipment_classes": {
+    "pump": {
+      "name": "Pumps",
+      "description": "Fluid transfer and pressure boosting equipment",
+      "icon": "🔄",
+      "types": {
+        "centrifugal": {
+          "name": "Centrifugal Pumps",
+          "api_standards": ["API 610", "API 682"],
+          "subtypes": {
+            "single_stage_horizontal": "Single-Stage Horizontal (OH2)",
+            "multi_stage_horizontal": "Multi-Stage Horizontal (BB3/BB5)",
+            "vertical_inline": "Vertical Inline (OH3)",
+            "vertical_turbine": "Vertical Turbine (VS6)",
+            "between_bearings": "Between Bearings (BB1/BB2)",
+            "vertically_suspended": "Vertically Suspended (VS1-VS7)"
+          }
+        },
+        "positive_displacement": {
+          "name": "Positive Displacement Pumps",
+          "api_standards": ["API 674", "API 675", "API 676"],
+          "subtypes": {
+            "reciprocating_plunger": "Reciprocating Plunger",
+            "reciprocating_diaphragm": "Reciprocating Diaphragm",
+            "rotary_screw": "Rotary Screw (Twin-Screw)",
+            "rotary_gear": "Rotary Gear (External)",
+            "progressive_cavity": "Progressive Cavity (PC/PCP)",
+            "rotary_lobe": "Rotary Lobe"
+          }
+        },
+        "special_purpose": {
+          "name": "Special Purpose Pumps",
+          "api_standards": ["API 610", "API 685", "API 11S1"],
+          "subtypes": {
+            "cryogenic": "Cryogenic Pump",
+            "high_temperature": "High-Temperature Pump",
+            "slurry": "Slurry Pump",
+            "submersible_esp": "Electric Submersible Pump (ESP)",
+            "magnetic_drive": "Magnetic Drive (Sealless)",
+            "canned_motor": "Canned Motor (Sealless)"
+          }
+        }
+      }
+    },
+    "compressor": {
+      "name": "Compressors",
+      "description": "Gas compression and pressure boosting equipment",
+      "icon": "🌀",
+      "types": {
+        "dynamic": {
+          "name": "Dynamic Compressors",
+          "api_standards": ["API 617", "API 672"],
+          "subtypes": {
+            "centrifugal_single_shaft": "Centrifugal Single-Shaft",
+            "centrifugal_integrally_geared": "Centrifugal Integrally-Geared",
+            "axial": "Axial Compressor"
+          }
+        },
+        "positive_displacement": {
+          "name": "Positive Displacement Compressors",
+          "api_standards": ["API 618", "API 619"],
+          "subtypes": {
+            "reciprocating_single_acting": "Reciprocating Single-Acting",
+            "reciprocating_double_acting": "Reciprocating Double-Acting",
+            "rotary_screw_oil_flooded": "Rotary Screw (Oil-Flooded)",
+            "rotary_screw_oil_free": "Rotary Screw (Oil-Free)",
+            "scroll": "Scroll Compressor",
+            "rotary_vane": "Rotary Vane"
+          }
+        },
+        "service_specific": {
+          "name": "Service-Specific Compressors",
+          "api_standards": ["API 617", "API 618"],
+          "subtypes": {
+            "gas_service": "Natural Gas Service",
+            "air_service": "Air Service",
+            "refrigeration_service": "Refrigeration Service",
+            "process_gas": "Process Gas Service"
+          }
+        }
+      }
+    },
+    "turbine": {
+      "name": "Turbines",
+      "description": "Power generation and mechanical drive equipment",
+      "icon": "⚡",
+      "types": {
+        "steam": {
+          "name": "Steam Turbines",
+          "api_standards": ["API 611", "API 612"],
+          "subtypes": {
+            "condensing": "Condensing Steam Turbine",
+            "back_pressure": "Back-Pressure Steam Turbine",
+            "extraction": "Extraction Steam Turbine",
+            "reheat": "Reheat Steam Turbine"
+          }
+        },
+        "gas": {
+          "name": "Gas Turbines",
+          "api_standards": ["API 616"],
+          "subtypes": {
+            "aero_derivative": "Aero-Derivative Gas Turbine",
+            "industrial_heavy_duty": "Industrial Heavy-Duty Gas Turbine",
+            "micro_turbine": "Micro Gas Turbine"
+          }
+        },
+        "hydraulic": {
+          "name": "Hydraulic Turbines",
+          "api_standards": ["IEC 60193", "IEC 60041"],
+          "subtypes": {
+            "francis": "Francis Turbine",
+            "kaplan": "Kaplan Turbine",
+            "pelton": "Pelton Turbine",
+            "crossflow": "Crossflow Turbine"
+          }
+        }
+      }
+    },
+    "heat_exchanger": {
+      "name": "Heat Exchangers",
+      "description": "Heat transfer equipment for process heating and cooling",
+      "icon": "🔥",
+      "types": {
+        "shell_and_tube": {
+          "name": "Shell-and-Tube Heat Exchangers",
+          "api_standards": ["API 660", "TEMA"],
+          "subtypes": {
+            "fixed_tubesheet": "Fixed Tubesheet (TEMA Type BEM)",
+            "u_tube": "U-Tube (TEMA Type BEU)",
+            "floating_head": "Floating Head (TEMA Type AES)",
+            "kettle_reboiler": "Kettle Reboiler (TEMA Type AKT)"
+          }
+        },
+        "plate": {
+          "name": "Plate Heat Exchangers",
+          "api_standards": ["ASME Section VIII"],
+          "subtypes": {
+            "gasketed_plate": "Gasketed Plate",
+            "brazed_plate": "Brazed Plate",
+            "welded_plate": "Welded Plate",
+            "plate_and_frame": "Plate-and-Frame"
+          }
+        },
+        "air_cooled": {
+          "name": "Air-Cooled Heat Exchangers",
+          "api_standards": ["API 661"],
+          "subtypes": {
+            "forced_draft": "Forced Draft",
+            "induced_draft": "Induced Draft",
+            "natural_draft": "Natural Draft"
+          }
+        },
+        "fired_heater": {
+          "name": "Fired Heaters",
+          "api_standards": ["API 560"],
+          "subtypes": {
+            "cabin_heater": "Cabin Heater",
+            "vertical_cylindrical": "Vertical Cylindrical",
+            "box_heater": "Box Heater"
+          }
+        }
+      }
+    },
+    "valve": {
+      "name": "Valves",
+      "description": "Flow control and isolation equipment",
+      "icon": "🔧",
+      "types": {
+        "control": {
+          "name": "Control Valves",
+          "api_standards": ["ISA 75", "IEC 60534"],
+          "subtypes": {
+            "globe_control": "Globe Control Valve",
+            "butterfly_control": "Butterfly Control Valve",
+            "ball_control": "Ball Control Valve",
+            "rotary_control": "Rotary Control Valve"
+          }
+        },
+        "safety": {
+          "name": "Safety Valves",
+          "api_standards": ["API 520", "API 526", "API 527"],
+          "subtypes": {
+            "spring_loaded_prv": "Spring-Loaded Pressure Relief Valve",
+            "pilot_operated_prv": "Pilot-Operated Pressure Relief Valve",
+            "rupture_disk": "Rupture Disk",
+            "pressure_vacuum_relief": "Pressure-Vacuum Relief Valve"
+          }
+        },
+        "isolation": {
+          "name": "Isolation Valves",
+          "api_standards": ["API 600", "API 602", "API 608"],
+          "subtypes": {
+            "gate": "Gate Valve",
+            "globe": "Globe Valve",
+            "ball": "Ball Valve",
+            "plug": "Plug Valve",
+            "butterfly": "Butterfly Valve"
+          }
+        },
+        "check": {
+          "name": "Check Valves",
+          "api_standards": ["API 594"],
+          "subtypes": {
+            "swing_check": "Swing Check Valve",
+            "lift_check": "Lift Check Valve",
+            "tilting_disk": "Tilting Disk Check Valve",
+            "dual_plate": "Dual Plate Check Valve"
+          }
+        }
+      }
+    },
+    "separator": {
+      "name": "Separators",
+      "description": "Phase separation equipment",
+      "icon": "⚗️",
+      "types": {
+        "two_phase": {
+          "name": "Two-Phase Separators",
+          "api_standards": ["API 12J"],
+          "subtypes": {
+            "horizontal_two_phase": "Horizontal Two-Phase Separator",
+            "vertical_two_phase": "Vertical Two-Phase Separator",
+            "spherical_two_phase": "Spherical Two-Phase Separator"
+          }
+        },
+        "three_phase": {
+          "name": "Three-Phase Separators",
+          "api_standards": ["API 12J"],
+          "subtypes": {
+            "horizontal_three_phase": "Horizontal Three-Phase Separator",
+            "vertical_three_phase": "Vertical Three-Phase Separator",
+            "free_water_knockout": "Free Water Knockout (FWKO)"
+          }
+        },
+        "cyclone": {
+          "name": "Cyclone Separators",
+          "api_standards": ["API 12J"],
+          "subtypes": {
+            "gas_liquid_cyclone": "Gas-Liquid Cyclone",
+            "desander": "Desander",
+            "desilter": "Desilter"
+          }
+        },
+        "electrostatic": {
+          "name": "Electrostatic Separators",
+          "api_standards": ["API 12J"],
+          "subtypes": {
+            "electrostatic_treater": "Electrostatic Treater",
+            "electrostatic_coalescer": "Electrostatic Coalescer"
+          }
+        }
+      }
+    },
+    "vessel": {
+      "name": "Vessels & Tanks",
+      "description": "Storage and process vessels",
+      "icon": "🛢️",
+      "types": {
+        "storage_tank": {
+          "name": "Storage Tanks",
+          "api_standards": ["API 650", "API 653"],
+          "subtypes": {
+            "fixed_roof": "Fixed Roof Tank",
+            "floating_roof": "Floating Roof Tank",
+            "cone_roof": "Cone Roof Tank",
+            "dome_roof": "Dome Roof Tank"
+          }
+        },
+        "pressure_vessel": {
+          "name": "Pressure Vessels",
+          "api_standards": ["API 510", "ASME Section VIII"],
+          "subtypes": {
+            "horizontal_vessel": "Horizontal Pressure Vessel",
+            "vertical_vessel": "Vertical Pressure Vessel",
+            "spherical_vessel": "Spherical Pressure Vessel",
+            "bullet_tank": "Bullet Tank"
+          }
+        },
+        "reactor": {
+          "name": "Reactors",
+          "api_standards": ["ASME Section VIII"],
+          "subtypes": {
+            "fixed_bed_reactor": "Fixed Bed Reactor",
+            "fluidized_bed_reactor": "Fluidized Bed Reactor",
+            "cstr": "Continuous Stirred Tank Reactor (CSTR)",
+            "batch_reactor": "Batch Reactor"
+          }
+        }
+      }
+    }
+  },
+  "service_classifications": {
+    "critical": "Critical - Failure causes production shutdown",
+    "safety_critical": "Safety-Critical - Failure poses safety risk",
+    "non_critical": "Non-Critical - Redundancy available",
+    "standby": "Standby - Backup equipment"
+  },
+  "drive_types": {
+    "electric_motor": "Electric Motor",
+    "gas_turbine": "Gas Turbine",
+    "steam_turbine": "Steam Turbine",
+    "diesel_engine": "Diesel Engine",
+    "hydraulic": "Hydraulic Drive"
+  },
+  "installation_types": {
+    "surface": "Surface Installation",
+    "underground": "Underground Installation",
+    "submersible": "Submersible Installation",
+    "inline": "In-line Installation",
+    "skid_mounted": "Skid-Mounted",
+    "package_unit": "Package Unit"
+  }
+}

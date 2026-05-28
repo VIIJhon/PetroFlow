@@ -1,0 +1,175 @@
+{
+  "provider": "mock",
+  "model": "gpt-4",
+  "api_key": "",
+  "max_tokens": 2000,
+  "temperature": 0.7,
+  "offline_mode": true,
+  "enable_multimodal": true,
+  "enable_context_memory": true,
+  "max_context_length": 10,
+  "confidence_threshold": 0.7,
+  "languages": ["en", "es"],
+  "default_language": "en",
+  
+  "providers": {
+    "openai": {
+      "api_base": "https://api.openai.com/v1",
+      "models": {
+        "gpt-4": {
+          "max_tokens": 8192,
+          "context_window": 8192,
+          "cost_per_1k_tokens": 0.03
+        },
+        "gpt-4-turbo": {
+          "max_tokens": 128000,
+          "context_window": 128000,
+          "cost_per_1k_tokens": 0.01
+        },
+        "gpt-3.5-turbo": {
+          "max_tokens": 4096,
+          "context_window": 16385,
+          "cost_per_1k_tokens": 0.0015
+        }
+      }
+    },
+    "anthropic": {
+      "api_base": "https://api.anthropic.com",
+      "models": {
+        "claude-3-opus": {
+          "max_tokens": 4096,
+          "context_window": 200000,
+          "cost_per_1k_tokens": 0.015
+        },
+        "claude-3-sonnet": {
+          "max_tokens": 4096,
+          "context_window": 200000,
+          "cost_per_1k_tokens": 0.003
+        },
+        "claude-3-haiku": {
+          "max_tokens": 4096,
+          "context_window": 200000,
+          "cost_per_1k_tokens": 0.00025
+        }
+      }
+    },
+    "local": {
+      "model_path": "./models/",
+      "models": {
+        "llama-2-7b": {
+          "max_tokens": 4096,
+          "context_window": 4096,
+          "quantization": "q4_0"
+        },
+        "mistral-7b": {
+          "max_tokens": 8192,
+          "context_window": 8192,
+          "quantization": "q4_0"
+        }
+      }
+    }
+  },
+  
+  "prompts": {
+    "diagnostic_system": "You are an expert industrial equipment diagnostic system for oil and gas operations. Provide accurate, actionable insights based on sensor data and equipment type.",
+    "report_generation": "Generate a comprehensive technical report with clear explanations suitable for both technical staff and management.",
+    "root_cause_analysis": "Analyze the provided data to identify the root cause of equipment issues. Consider historical patterns, sensor correlations, and industry best practices.",
+    "maintenance_recommendations": "Provide specific, prioritized maintenance recommendations based on the diagnostic analysis. Include estimated time, required resources, and expected outcomes."
+  },
+  
+  "knowledge_base": {
+    "equipment_types": ["pump", "compressor", "turbine", "valve", "heat_exchanger", "separator"],
+    "sensor_types": ["temperature", "vibration", "pressure", "flow", "rpm", "current", "voltage"],
+    "failure_modes": [
+      "bearing_failure",
+      "seal_leakage",
+      "cavitation",
+      "surge",
+      "fouling",
+      "corrosion",
+      "erosion",
+      "misalignment",
+      "imbalance",
+      "overheating"
+    ]
+  },
+  
+  "thresholds": {
+    "pump": {
+      "vibration": {"normal": 4.5, "warning": 7.1, "critical": 11.2},
+      "temperature": {"normal": 60, "warning": 90, "critical": 120},
+      "pressure": {"normal": 50, "warning": 80, "critical": 100}
+    },
+    "compressor": {
+      "vibration": {"normal": 5.0, "warning": 8.0, "critical": 12.0},
+      "temperature": {"normal": 80, "warning": 110, "critical": 140},
+      "pressure_ratio": {"normal": 3.0, "warning": 4.5, "critical": 6.0}
+    },
+    "turbine": {
+      "vibration": {"normal": 6.0, "warning": 9.0, "critical": 13.0},
+      "temperature": {"normal": 500, "warning": 700, "critical": 900},
+      "rpm": {"normal": 3600, "warning": 3800, "critical": 4000}
+    }
+  },
+  
+  "report_settings": {
+    "include_charts": true,
+    "include_trends": true,
+    "include_recommendations": true,
+    "max_sections": 10,
+    "chart_style": "professional",
+    "pdf_template": "standard",
+    "supported_formats": ["pdf", "json", "html", "docx"],
+    "default_format": "pdf"
+  },
+  
+  "security": {
+    "enable_api_key_rotation": true,
+    "api_key_rotation_days": 90,
+    "enable_request_logging": true,
+    "enable_response_filtering": true,
+    "max_requests_per_minute": 60,
+    "enable_content_moderation": false
+  },
+  
+  "performance": {
+    "enable_caching": true,
+    "cache_ttl_seconds": 3600,
+    "enable_batch_processing": true,
+    "batch_size": 10,
+    "timeout_seconds": 30,
+    "retry_attempts": 3,
+    "retry_delay_seconds": 2
+  },
+  
+  "monitoring": {
+    "enable_metrics": true,
+    "log_level": "INFO",
+    "track_token_usage": true,
+    "track_response_time": true,
+    "track_error_rate": true,
+    "alert_on_high_error_rate": true,
+    "error_rate_threshold": 0.1
+  },
+  
+  "fallback": {
+    "enable_offline_mode": true,
+    "use_rule_based_fallback": true,
+    "cache_responses": true,
+    "notify_on_fallback": true
+  },
+  
+  "multi_language": {
+    "supported_languages": ["en", "es", "pt", "fr"],
+    "default_language": "en",
+    "auto_detect_language": false,
+    "translation_service": null
+  },
+  
+  "integration": {
+    "enable_failure_prediction": true,
+    "enable_maintenance_scheduling": true,
+    "enable_documentation_search": true,
+    "enable_historical_analysis": true
+  }
+}

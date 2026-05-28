@@ -1,0 +1,157 @@
+{
+  "_comment": "PetroFlow Redis Rate Limiter Configuration",
+  "_description": "Configuration for distributed rate limiting using Redis",
+  
+  "redis": {
+    "enabled": true,
+    "host": "localhost",
+    "port": 6379,
+    "db": 0,
+    "password": null,
+    "url": "redis://localhost:6379/0",
+    "socket_timeout": 2,
+    "socket_connect_timeout": 2,
+    "decode_responses": true,
+    "max_connections": 50,
+    "retry_on_timeout": true
+  },
+  
+  "connection_pool": {
+    "max_connections": 50,
+    "timeout": 20,
+    "retry_on_timeout": true,
+    "health_check_interval": 30
+  },
+  
+  "rate_limit_tiers": {
+    "user": {
+      "algorithm": "token_bucket",
+      "capacity": 1000,
+      "refill_rate": 10.0,
+      "window": 60,
+      "limit": 100,
+      "description": "Per-user rate limiting"
+    },
+    "ip": {
+      "algorithm": "sliding_window",
+      "capacity": 500,
+      "refill_rate": 5.0,
+      "window": 60,
+      "limit": 50,
+      "description": "Per-IP address rate limiting"
+    },
+    "endpoint": {
+      "algorithm": "token_bucket",
+      "capacity": 2000,
+      "refill_rate": 20.0,
+      "window": 60,
+      "limit": 200,
+      "description": "Per-endpoint rate limiting"
+    },
+    "global": {
+      "algorithm": "sliding_window",
+      "capacity": 10000,
+      "refill_rate": 100.0,
+      "window": 60,
+      "limit": 1000,
+      "description": "Global system rate limiting"
+    },
+    "api_key": {
+      "algorithm": "token_bucket",
+      "capacity": 5000,
+      "refill_rate": 50.0,
+      "window": 60,
+      "limit": 500,
+      "description": "Per-API key rate limiting"
+    }
+  },
+  
+  "action_specific_limits": {
+    "login": {
+      "requests": 5,
+      "window": 300,
+      "block_duration": 900,
+      "description": "Login attempts - 5 per 5 minutes"
+    },
+    "api": {
+      "requests": 100,
+      "window": 60,
+      "block_duration": 300,
+      "description": "General API calls - 100 per minute"
+    },
+    "password_reset": {
+      "requests": 3,
+      "window": 3600,
+      "block_duration": 3600,
+      "description": "Password reset - 3 per hour"
+    },
+    "registration": {
+      "requests": 3,
+      "window": 3600,
+      "block_duration": 3600,
+      "description": "User registration - 3 per hour"
+    },
+    "data_export": {
+      "requests": 10,
+      "window": 3600,
+      "block_duration": 1800,
+      "description": "Data export - 10 per hour"
+    },
+    "file_upload": {
+      "requests": 20,
+      "window": 300,
+      "block_duration": 600,
+      "description": "File uploads - 20 per 5 minutes"
+    }
+  },
+  
+  "fallback": {
+    "enabled": true,
+    "use_in_memory": true,
+    "cleanup_interval": 300,
+    "description": "Fallback to in-memory storage when Redis unavailable"
+  },
+  
+  "key_prefix": "petroflow:ratelimit",
+  
+  "monitoring": {
+    "enabled": true,
+    "log_rate_limit_exceeded": true,
+    "log_level": "WARNING",
+    "metrics_enabled": true
+  },
+  
+  "security": {
+    "enable_ip_whitelist": true,
+    "enable_ip_blacklist": true,
+    "auto_block_threshold": 10,
+    "auto_block_duration": 3600,
+    "suspicious_activity_threshold": 5
+  },
+  
+  "performance": {
+    "use_lua_scripts": true,
+    "pipeline_requests": true,
+    "batch_size": 100
+  },
+  
+  "environments": {
+    "development": {
+      "redis_url": "redis://localhost:6379/0",
+      "enabled": false,
+      "use_in_memory": true
+    },
+    "staging": {
+      "redis_url": "redis://redis-staging:6379/0",
+      "enabled": true,
+      "password": "${REDIS_PASSWORD}"
+    },
+    "production": {
+      "redis_url": "redis://redis-prod:6379/0",
+      "enabled": true,
+      "password": "${REDIS_PASSWORD}",
+      "ssl": true,
+      "ssl_cert_reqs": "required"
+    }
+  }
+}

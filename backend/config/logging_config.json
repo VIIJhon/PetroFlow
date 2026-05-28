@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "log_level": "INFO",
+  "log_directory": "logs",
+  "max_file_size_mb": 10,
+  "backup_count": 5,
+  "retention_days": 90,
+  "enable_console_output": true,
+  "enable_file_output": true,
+  "log_format": "[%(asctime)s] [%(levelname)s] [SESSION:%(session_id)s] [USER:%(user_id)s] [MODULE:%(module)s] [ACTION:%(action)s] %(message)s",
+  "date_format": "%Y-%m-%dT%H:%M:%S",
+  "categories": {
+    "system_audit": {
+      "enabled": true,
+      "file": "system_audit.log",
+      "level": "INFO"
+    },
+    "authentication": {
+      "enabled": true,
+      "file": "authentication.log",
+      "level": "INFO"
+    },
+    "database": {
+      "enabled": true,
+      "file": "database.log",
+      "level": "INFO"
+    },
+    "predictions": {
+      "enabled": true,
+      "file": "predictions.log",
+      "level": "INFO"
+    },
+    "file_operations": {
+      "enabled": true,
+      "file": "file_operations.log",
+      "level": "INFO"
+    },
+    "errors": {
+      "enabled": true,
+      "file": "errors.log",
+      "level": "ERROR"
+    },
+    "security": {
+      "enabled": true,
+      "file": "security.log",
+      "level": "WARNING"
+    }
+  },
+  "sensitive_fields": [
+    "password",
+    "token",
+    "secret",
+    "api_key",
+    "credit_card",
+    "ssn",
+    "social_security"
+  ],
+  "performance": {
+    "async_logging": true,
+    "buffer_size": 100,
+    "flush_interval_seconds": 5
+  }
+}

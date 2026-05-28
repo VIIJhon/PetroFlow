@@ -1,0 +1,44 @@
+{
+  "broker": {
+    "host": "localhost",
+    "port": 1883,
+    "use_tls": false,
+    "tls_ca_cert": null,
+    "tls_client_cert": null,
+    "tls_client_key": null,
+    "keepalive": 60,
+    "clean_session": true
+  },
+  "authentication": {
+    "username": null,
+    "password": null
+  },
+  "connection": {
+    "auto_reconnect": true,
+    "reconnect_delay_min": 1,
+    "reconnect_delay_max": 60,
+    "max_reconnect_attempts": 10
+  },
+  "subscriptions": {
+    "default_qos": 1,
+    "topics": [
+      "petroflow/+/equipment/+/sensors/#",
+      "petroflow/+/equipment/+/alerts",
+      "petroflow/+/system/health"
+    ]
+  },
+  "data_processing": {
+    "enable_validation": true,
+    "enable_unit_conversion": true,
+    "enable_anomaly_detection": false,
+    "buffer_size": 1000,
+    "batch_processing": false,
+    "batch_size": 10
+  },
+  "integration": {
+    "feed_to_prediction_engine": true,
+    "store_in_database": true,
+    "log_telemetry_events": true,
+    "update_ui_realtime": true
+  }
+}

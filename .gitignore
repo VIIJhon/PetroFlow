@@ -1,0 +1,96 @@
+# ==============================================================================
+# PetroFlow .gitignore
+# ISO/IEC 27001 — Sensitive data must never enter version control
+# ==============================================================================
+
+# --- Secrets & Credentials (CRITICAL) ----------------------------------------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+certs/
+
+# --- Database files -----------------------------------------------------------
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# --- Storage & uploads --------------------------------------------------------
+storage/
+logs/
+htmlcov/
+
+# --- Python -------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+ENV/
+pip-wheel-metadata/
+.pytest_cache/
+.coverage
+coverage.xml
+*.coveragerc
+
+# --- ML model artifacts -------------------------------------------------------
+models/
+*.pkl
+*.joblib
+*.h5
+*.onnx
+
+# --- IDE & OS -----------------------------------------------------------------
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Docker sensitive files ---------------------------------------------------
+docker-compose.override.yml
+
+# --- Backup files -------------------------------------------------------------
+*.bak
+*_backup*
+*_original*
+app_original_backup.py
+
+# --- Docs build artifacts and local doc outputs
+docs/_build/
+backend/docs/_build/
+
+# --- Scripts logs and local outputs
+backend/scripts/*.log
+
+# --- Node and Frontend --------------------------------------------------------
+node_modules/
+frontend/node_modules/
+build/
+frontend/build/
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Legacy Code --------------------------------------------------------------
+old_legacy/
+legacy/

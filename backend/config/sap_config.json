@@ -1,0 +1,231 @@
+{
+  "_comment": "PetroFlow SAP PM Integration Configuration",
+  "_description": "Configuration for SAP Plant Maintenance integration via RFC and REST API",
+  
+  "connection": {
+    "enabled": true,
+    "host": "sap.example.com",
+    "client": "100",
+    "sysnr": "00",
+    "lang": "EN",
+    "saprouter": null,
+    "description": "SAP PM production system"
+  },
+  
+  "authentication": {
+    "type": "basic",
+    "user": "${SAP_USER}",
+    "password": "${SAP_PASSWORD}",
+    "oauth_token_url": null,
+    "client_id": null,
+    "client_secret": null
+  },
+  
+  "rfc": {
+    "enabled": true,
+    "pool_size": 10,
+    "trace": false,
+    "description": "RFC connection settings (requires PyRFC library)"
+  },
+  
+  "rest_api": {
+    "enabled": true,
+    "base_url": "https://sap.example.com/sap/opu/odata/sap",
+    "timeout": 30,
+    "verify_ssl": true,
+    "endpoints": {
+      "maintenance_order": "/API_MAINTENANCEORDER/MaintenanceOrder",
+      "maintenance_notification": "/API_MAINTNOTIFICATION/MaintenanceNotification",
+      "equipment": "/API_EQUIPMENT/Equipment",
+      "functional_location": "/API_FUNCLOC/FunctionalLocation",
+      "work_center": "/API_WORKCENTER/WorkCenter"
+    }
+  },
+  
+  "work_order_types": {
+    "PM01": {
+      "description": "Corrective Maintenance",
+      "default_priority": "3",
+      "auto_release": false
+    },
+    "PM02": {
+      "description": "Preventive Maintenance",
+      "default_priority": "3",
+      "auto_release": true
+    },
+    "PM03": {
+      "description": "Inspection",
+      "default_priority": "4",
+      "auto_release": true
+    },
+    "PM04": {
+      "description": "Breakdown Maintenance",
+      "default_priority": "1",
+      "auto_release": true
+    }
+  },
+  
+  "notification_types": {
+    "M1": {
+      "description": "Malfunction Report",
+      "default_priority": "2",
+      "auto_create_work_order": true
+    },
+    "M2": {
+      "description": "Maintenance Request",
+      "default_priority": "3",
+      "auto_create_work_order": false
+    },
+    "M3": {
+      "description": "Activity Report",
+      "default_priority": "4",
+      "auto_create_work_order": false
+    }
+  },
+  
+  "priority_mapping": {
+    "1": {
+      "description": "Very High",
+      "sla_hours": 4,
+      "escalation_enabled": true
+    },
+    "2": {
+      "description": "High",
+      "sla_hours": 24,
+      "escalation_enabled": true
+    },
+    "3": {
+      "description": "Medium",
+      "sla_hours": 72,
+      "escalation_enabled": false
+    },
+    "4": {
+      "description": "Low",
+      "sla_hours": 168,
+      "escalation_enabled": false
+    }
+  },
+  
+  "synchronization": {
+    "enabled": true,
+    "sync_interval_minutes": 15,
+    "sync_equipment": true,
+    "sync_work_orders": true,
+    "sync_notifications": true,
+    "sync_functional_locations": true,
+    "batch_size": 100,
+    "max_retries": 3,
+    "retry_delay_seconds": 60
+  },
+  
+  "field_mapping": {
+    "equipment": {
+      "petroflow_field": "sap_field",
+      "asset_id": "EQUNR",
+      "description": "EQKTX",
+      "manufacturer": "HERST",
+      "model": "TYPBZ",
+      "serial_number": "SERNR",
+      "functional_location": "TPLNR",
+      "status": "EQART"
+    },
+    "work_order": {
+      "order_id": "AUFNR",
+      "order_type": "AUART",
+      "description": "KTEXT",
+      "equipment": "EQUNR",
+      "functional_location": "TPLNR",
+      "priority": "PRIOK",
+      "status": "STAT",
+      "start_date": "GSTRP",
+      "end_date": "GLTRP"
+    }
+  },
+  
+  "error_handling": {
+    "retry_on_connection_error": true,
+    "max_retries": 3,
+    "retry_delay_seconds": 5,
+    "exponential_backoff": true,
+    "backoff_multiplier": 2,
+    "max_retry_delay_seconds": 60,
+    "log_errors": true,
+    "alert_on_critical_errors": true
+  },
+  
+  "performance": {
+    "connection_pool_size": 10,
+    "request_timeout_seconds": 30,
+    "batch_operations": true,
+    "use_compression": true,
+    "cache_metadata": true,
+    "cache_ttl_seconds": 3600
+  },
+  
+  "security": {
+    "encrypt_credentials": true,
+    "use_ssl": true,
+    "verify_ssl_certificates": true,
+    "certificate_path": null,
+    "allowed_ip_ranges": [],
+    "audit_all_operations": true
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "log_all_requests": false,
+    "log_errors_only": true,
+    "metrics_enabled": true,
+    "health_check_interval_seconds": 60,
+    "alert_on_connection_failure": true
+  },
+  
+  "data_validation": {
+    "validate_equipment_numbers": true,
+    "validate_work_order_types": true,
+    "validate_priority_values": true,
+    "validate_dates": true,
+    "strict_mode": false
+  },
+  
+  "integration_rules": {
+    "auto_create_notifications_from_alerts": true,
+    "auto_create_work_orders_from_critical_alerts": true,
+    "sync_completion_status_to_petroflow": true,
+    "update_equipment_status_on_work_order_completion": true,
+    "create_petroflow_tasks_from_sap_operations": false
+  },
+  
+  "environments": {
+    "development": {
+      "host": "sap-dev.example.com",
+      "client": "100",
+      "enabled": true,
+      "rest_api_base_url": "https://sap-dev.example.com/sap/opu/odata/sap"
+    },
+    "staging": {
+      "host": "sap-qa.example.com",
+      "client": "200",
+      "enabled": true,
+      "rest_api_base_url": "https://sap-qa.example.com/sap/opu/odata/sap"
+    },
+    "production": {
+      "host": "sap-prod.example.com",
+      "client": "300",
+      "enabled": true,
+      "rest_api_base_url": "https://sap-prod.example.com/sap/opu/odata/sap"
+    }
+  },
+  
+  "custom_fields": {
+    "equipment": {
+      "petroflow_asset_type": "ZZASSETTYPE",
+      "petroflow_criticality": "ZZCRITICALITY",
+      "petroflow_location": "ZZLOCATION"
+    },
+    "work_order": {
+      "petroflow_alert_id": "ZZALERTID",
+      "petroflow_prediction_id": "ZZPREDID"
+    }
+  }
+}

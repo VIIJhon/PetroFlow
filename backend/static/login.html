@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetroFlow Enterprise — Acceso al Sistema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #080E1A;
+            --bg-panel: #0D1625;
+            --accent: #0A84FF;
+            --accent-glow: rgba(10, 132, 255, 0.35);
+            --accent-hover: #339AFF;
+            --gold: #F5A623;
+            --gold-glow: rgba(245, 166, 35, 0.2);
+            --text: #E8EAED;
+            --text-muted: #8A9BB0;
+            --border: rgba(255,255,255,0.08);
+            --border-active: rgba(10, 132, 255, 0.5);
+            --card-bg: rgba(13, 22, 37, 0.85);
+            --success: #30D158;
+            --error: #FF453A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--text);
+        }
+
+        /* ========================= ANIMATED BACKGROUND ========================= */
+        .bg-scene {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(10,132,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(10,132,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridPan 20s linear infinite;
+        }
+
+        @keyframes gridPan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(60px); }
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: orbFloat 8s ease-in-out infinite alternate;
+        }
+
+        .bg-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(10,132,255,0.12) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+        }
+
+        .bg-orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -4s;
+            animation-direction: alternate-reverse;
+        }
+
+        .bg-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(10,132,255,0.07) 0%, transparent 70%);
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: -2s;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(20px, 30px) scale(1.05); }
+        }
+
+        /* Animated pumpjack / derrick icon background */
+        .bg-derrick {
+            position: absolute;
+            right: 8%;
+            bottom: 0;
+            width: 280px;
+            opacity: 0.05;
+        }
+
+        /* Waveform lines */
+        .bg-waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        .bg-waves svg {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            animation: waveSlide 12s linear infinite;
+        }
+
+        .bg-waves svg:nth-child(2) {
+            animation-delay: -6s;
+            opacity: 0.5;
+        }
+
+        @keyframes waveSlide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ========================= MAIN CARD ========================= */
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.04) inset,
+                0 32px 64px rgba(0,0,0,0.5),
+                0 0 80px rgba(10,132,255,0.08);
+            animation: cardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ========================= LOGO SECTION ========================= */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #0A84FF 0%, #0055B3 100%);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            box-shadow: 0 8px 24px var(--accent-glow);
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 17px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+            pointer-events: none;
+        }
+
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        .logo-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #E8EAED 0%, #8A9BB0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ========================= FORM STYLES ========================= */
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-input::placeholder {
+            color: rgba(138,155,176,0.5);
+        }
+
+        .form-input:focus {
+            border-color: var(--border-active);
+            background: rgba(10,132,255,0.05);
+            box-shadow: 0 0 0 3px rgba(10,132,255,0.12);
+        }
+
+        /* ========================= ALERTS ========================= */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            animation: alertIn 0.3s ease;
+        }
+
+        @keyframes alertIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-error {
+            background: rgba(255,69,58,0.1);
+            border: 1px solid rgba(255,69,58,0.3);
+            color: #FF6B62;
+        }
+
+        .alert-success {
+            background: rgba(48,209,88,0.1);
+            border: 1px solid rgba(48,209,88,0.3);
+            color: #3DDB77;
+        }
+
+        /* ========================= BUTTON ========================= */
+        .btn-login {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #0A84FF 0%, #0055B3 100%);
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.2px;
+            margin-top: 4px;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn-login:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(10,132,255,0.4);
+        }
+
+        .btn-login:hover:not(:disabled)::before { opacity: 1; }
+
+        .btn-login:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-login .btn-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ========================= DIVIDER ========================= */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ========================= DEMO CREDENTIALS ========================= */
+        .demo-credentials {
+            background: rgba(245,166,35,0.06);
+            border: 1px solid rgba(245,166,35,0.15);
+            border-radius: 10px;
+            padding: 12px 16px;
+        }
+
+        .demo-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .demo-cred-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .demo-cred {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .demo-cred strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .demo-fill-btn {
+            font-size: 11px;
+            color: var(--accent);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            padding: 0;
+            margin-top: 6px;
+            display: inline-block;
+            transition: color 0.15s;
+        }
+
+        .demo-fill-btn:hover { color: var(--accent-hover); }
+
+        /* ========================= FOOTER ========================= */
+        .login-footer {
+            text-align: center;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .login-footer strong {
+            color: var(--text);
+        }
+
+        /* ========================= SUCCESS STATE ========================= */
+        .success-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: var(--card-bg);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            backdrop-filter: blur(20px);
+            animation: cardEntrance 0.4s ease;
+        }
+
+        .success-overlay.visible {
+            display: flex;
+        }
+
+        .success-check {
+            width: 64px;
+            height: 64px;
+            background: rgba(48,209,88,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-check svg {
+            width: 32px;
+            height: 32px;
+            stroke: #30D158;
+            animation: checkDraw 0.5s ease 0.2s both;
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+        }
+
+        @keyframes checkDraw {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-scene">
+        <div class="bg-grid"></div>
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+        <div class="bg-waves">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 40 C360 80 720 0 1080 40 S1440 80 1440 40 V80 H0 Z" fill="#0A84FF" opacity="0.15"/>
+            </svg>
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 60 C240 20 480 80 720 60 S1200 20 1440 60 V80 H0 Z" fill="#0A84FF" opacity="0.08"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-wrapper">
+        <div class="login-card" style="position:relative;">
+
+            <!-- Success Overlay -->
+            <div class="success-overlay" id="successOverlay">
+                <div class="success-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:18px; font-weight:700; color:var(--text); margin-bottom:4px;">¡Acceso Concedido!</div>
+                    <div style="font-size:13px; color:var(--text-muted);">Redirigiendo al Sistema de Control...</div>
+                </div>
+            </div>
+
+            <!-- Logo -->
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 22h20L12 2zm0 3.8L18.4 18H5.6L12 5.8zM11 10v4h2v-4h-2zm0 5v2h2v-2h-2z"/>
+                    </svg>
+                </div>
+                <div class="logo-title">PetroFlow Enterprise</div>
+                <div class="logo-subtitle">Sistema de Optimización e Integridad de Activos v2.0</div>
+            </div>
+
+            <!-- Error/Success Alerts -->
+            <div id="alertError" class="alert alert-error" style="margin-bottom:12px;"></div>
+            <div id="alertSuccess" class="alert alert-success" style="margin-bottom:12px;"></div>
+
+            <!-- Login Form -->
+            <form class="form-section" id="loginForm" onsubmit="handleLogin(event)">
+
+                <div class="form-group">
+                    <label class="form-label" for="loginUsername">Usuario o Correo</label>
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        class="form-input"
+                        placeholder="admin@petroflow.com"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Contraseña</label>
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        class="form-input"
+                        placeholder="••••••••"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span class="btn-content">
+                        <span class="spinner" id="loginSpinner"></span>
+                        <span id="loginBtnText">Iniciar Sesión</span>
+                    </span>
+                </button>
+            </form>
+
+            <div class="divider" style="margin-top:20px;">
+                <span>Credenciales de demostración</span>
+            </div>
+
+            <!-- Demo Credentials -->
+            <div class="demo-credentials" style="margin-top:12px;">
+                <div class="demo-header">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+                    </svg>
+                    Credenciales de Acceso Rápido
+                </div>
+                <div class="demo-cred-row">
+                    <div class="demo-cred"><strong>Usuario:</strong> admin</div>
+                    <div class="demo-cred"><strong>Contraseña:</strong> admin123</div>
+                </div>
+                <button class="demo-fill-btn" onclick="fillDemoCredentials()">Autocompletar credenciales →</button>
+            </div>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <strong>PetroFlow Enterprise v2.0</strong><br>
+                Sistema de Control de Producción &amp; Mantenimiento de Activos<br>
+                <span style="font-size:10.5px; margin-top:4px; display:block; opacity:0.6;">
+                    © 2026 Jhon Villegas — Acceso autorizado únicamente a personal certificado
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        function fillDemoCredentials() {
+            document.getElementById('loginUsername').value = 'admin';
+            document.getElementById('loginPassword').value = 'admin123';
+            document.getElementById('loginUsername').dispatchEvent(new Event('focus'));
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('alertError');
+            el.textContent = msg;
+            el.style.display = 'block';
+            document.getElementById('alertSuccess').style.display = 'none';
+            setTimeout(() => el.style.display = 'none', 6000);
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('loginBtn');
+            const spinner = document.getElementById('loginSpinner');
+            const text = document.getElementById('loginBtnText');
+            btn.disabled = loading;
+            spinner.style.display = loading ? 'block' : 'none';
+            text.textContent = loading ? 'Verificando acceso...' : 'Iniciar Sesión';
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showError('Por favor ingrese usuario y contraseña.');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('password', password);
+
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.mfa_required) {
+                        sessionStorage.setItem('temp_token', data.temp_token);
+                        window.location.href = '/mfa-verify';
+                        return;
+                    }
+
+                    // Store tokens
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('refresh_token', data.refresh_token);
+
+                    // Fetch user profile to store full name
+                    try {
+                        const profileRes = await fetch(`${API_BASE}/api/auth/me`, {
+                            headers: { 'Authorization': `Bearer ${data.access_token}` }
+                        });
+                        if (profileRes.ok) {
+                            const profile = await profileRes.json();
+                            const displayName = profile.full_name || profile.username || username;
+                            localStorage.setItem('user_full_name', displayName);
+                        } else {
+                            localStorage.setItem('user_full_name', username);
+                        }
+                    } catch (_) {
+                        localStorage.setItem('user_full_name', username);
+                    }
+
+                    // Show success overlay
+                    document.getElementById('successOverlay').classList.add('visible');
+
+                    // Redirect after animation
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1600);
+
+                } else {
+                    const errorMsg = data.detail || 'Credenciales incorrectas. Intente nuevamente.';
+                    showError(errorMsg);
+                    setLoading(false);
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('No se pudo conectar con el servidor. Verifique que PetroFlow está en ejecución.');
+                setLoading(false);
+            }
+        }
+
+        // Handle OAuth redirect callback
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessToken = urlParams.get('access_token');
+            const refreshToken = urlParams.get('refresh_token');
+            const error = urlParams.get('error');
+
+            if (error) {
+                showError(`Autenticación fallida: ${error}`);
+            } else if (accessToken && refreshToken) {
+                localStorage.setItem('access_token', accessToken);
+                localStorage.setItem('refresh_token', refreshToken);
+                document.getElementById('successOverlay').classList.add('visible');
+                setTimeout(() => window.location.href = '/', 1600);
+            }
+
+            // If already logged in and not expired, skip login
+            const existingToken = localStorage.getItem('access_token');
+            if (existingToken) {
+                try {
+                    const payload = JSON.parse(atob(existingToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+                    const nowSecs = Math.floor(Date.now() / 1000);
+                    if (payload.exp && payload.exp > nowSecs + 60) {
+                        window.location.href = '/';
+                        return;
+                    }
+                } catch (_) {}
+                // Token invalid - clear it
+                localStorage.removeItem('access_token');
+            }
+        });
+
+        // Keyboard shortcut: press Enter to submit
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
+                const form = document.getElementById('loginForm');
+                if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+            }
+        });
+    </script>
+</body>
+</html>

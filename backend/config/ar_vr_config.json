@@ -1,0 +1,293 @@
+{
+  "webxr_enabled": true,
+  "ar_mode": "immersive-ar",
+  "vr_mode": "immersive-vr",
+  "hand_tracking": true,
+  "multi_user": false,
+  "pbr_materials": true,
+  "shadow_quality": "high",
+  "antialiasing": true,
+  "ambient_occlusion": true,
+  "bloom_effect": false,
+  "max_hotspots": 50,
+  "sensor_update_interval": 1000,
+  "gesture_sensitivity": 0.8,
+  
+  "rendering": {
+    "renderer": "webgl2",
+    "pixel_ratio": "auto",
+    "antialias": true,
+    "alpha": true,
+    "preserve_drawing_buffer": false,
+    "power_preference": "high-performance",
+    "shadow_map": {
+      "enabled": true,
+      "type": "PCFSoftShadowMap",
+      "map_size": 2048
+    },
+    "tone_mapping": {
+      "enabled": true,
+      "exposure": 1.0,
+      "type": "ACESFilmic"
+    },
+    "post_processing": {
+      "enabled": true,
+      "effects": ["bloom", "ssao", "fxaa"]
+    }
+  },
+  
+  "camera": {
+    "fov": 75,
+    "near": 0.1,
+    "far": 1000,
+    "default_position": [3, 2, 5],
+    "default_target": [0, 0, 0],
+    "controls": {
+      "enabled": true,
+      "type": "orbit",
+      "enable_damping": true,
+      "damping_factor": 0.05,
+      "min_distance": 1,
+      "max_distance": 20,
+      "enable_pan": true,
+      "enable_zoom": true,
+      "enable_rotate": true,
+      "auto_rotate": false,
+      "auto_rotate_speed": 2.0
+    }
+  },
+  
+  "lighting": {
+    "ambient": {
+      "enabled": true,
+      "color": "#ffffff",
+      "intensity": 0.6
+    },
+    "directional": {
+      "enabled": true,
+      "color": "#ffffff",
+      "intensity": 0.8,
+      "position": [5, 10, 7.5],
+      "cast_shadow": true
+    },
+    "hemisphere": {
+      "enabled": true,
+      "sky_color": "#ffffff",
+      "ground_color": "#444444",
+      "intensity": 0.4
+    },
+    "point_lights": [],
+    "spot_lights": []
+  },
+  
+  "materials": {
+    "pbr_enabled": true,
+    "default_metalness": 0.3,
+    "default_roughness": 0.7,
+    "environment_map": null,
+    "texture_encoding": "sRGB",
+    "anisotropy": 16
+  },
+  
+  "ar_settings": {
+    "hit_test": true,
+    "plane_detection": true,
+    "light_estimation": true,
+    "depth_sensing": true,
+    "dom_overlay": true,
+    "marker_tracking": false,
+    "image_tracking": false,
+    "face_tracking": false,
+    "world_tracking": true,
+    "session_mode": "immersive-ar",
+    "required_features": ["hit-test", "dom-overlay"],
+    "optional_features": ["light-estimation", "depth-sensing"]
+  },
+  
+  "vr_settings": {
+    "session_mode": "immersive-vr",
+    "reference_space": "local-floor",
+    "required_features": ["local-floor"],
+    "optional_features": ["hand-tracking", "layers"],
+    "controller_models": true,
+    "hand_models": true,
+    "teleportation": true,
+    "locomotion_type": "teleport",
+    "comfort_mode": {
+      "enabled": true,
+      "vignette": true,
+      "snap_turn": true,
+      "snap_turn_angle": 45
+    }
+  },
+  
+  "hand_tracking": {
+    "enabled": true,
+    "show_hands": true,
+    "hand_model": "default",
+    "gesture_recognition": true,
+    "supported_gestures": [
+      "pinch",
+      "grab",
+      "point",
+      "thumbs_up",
+      "open_palm"
+    ],
+    "gesture_threshold": 0.8,
+    "haptic_feedback": true
+  },
+  
+  "interaction": {
+    "raycasting": {
+      "enabled": true,
+      "max_distance": 100,
+      "line_width": 2,
+      "line_color": "#00ff00"
+    },
+    "selection": {
+      "highlight_color": "#ffff00",
+      "outline_enabled": true,
+      "outline_thickness": 2
+    },
+    "manipulation": {
+      "enable_grab": true,
+      "enable_scale": true,
+      "enable_rotate": true,
+      "snap_to_grid": false,
+      "grid_size": 0.1
+    }
+  },
+  
+  "hotspots": {
+    "max_count": 50,
+    "default_size": 0.1,
+    "default_color": "#2196F3",
+    "hover_scale": 1.2,
+    "click_animation": true,
+    "show_labels": true,
+    "label_font_size": 14,
+    "label_background": "rgba(0, 0, 0, 0.8)",
+    "types": {
+      "info": {
+        "color": "#2196F3",
+        "icon": "ℹ️"
+      },
+      "warning": {
+        "color": "#FFC107",
+        "icon": "⚠️"
+      },
+      "critical": {
+        "color": "#F44336",
+        "icon": "🔴"
+      },
+      "maintenance": {
+        "color": "#4CAF50",
+        "icon": "🔧"
+      },
+      "sensor": {
+        "color": "#9C27B0",
+        "icon": "📊"
+      }
+    }
+  },
+  
+  "sensor_overlay": {
+    "enabled": true,
+    "update_interval": 1000,
+    "show_values": true,
+    "show_units": true,
+    "show_status": true,
+    "position_offset": [0, 0.5, 0],
+    "scale": [1, 0.5, 1],
+    "font_size": 24,
+    "background_opacity": 0.8,
+    "status_colors": {
+      "normal": "#4CAF50",
+      "warning": "#FFC107",
+      "critical": "#F44336"
+    }
+  },
+  
+  "multi_user": {
+    "enabled": false,
+    "websocket_url": "wss://petroflow.example.com/arvr",
+    "max_users": 10,
+    "show_avatars": true,
+    "show_cursors": true,
+    "enable_voice_chat": true,
+    "enable_text_chat": true,
+    "enable_annotations": true,
+    "sync_camera": false,
+    "sync_interactions": true
+  },
+  
+  "mobile_ar": {
+    "arcore_enabled": true,
+    "arkit_enabled": true,
+    "min_android_version": "7.0",
+    "min_ios_version": "11.0",
+    "qr_code_tracking": true,
+    "marker_size": 0.1,
+    "auto_focus": true,
+    "flash_enabled": false
+  },
+  
+  "performance": {
+    "target_fps": 60,
+    "adaptive_quality": true,
+    "lod_enabled": true,
+    "lod_levels": 3,
+    "frustum_culling": true,
+    "occlusion_culling": false,
+    "instancing": true,
+    "texture_compression": true,
+    "max_texture_size": 2048,
+    "geometry_simplification": true
+  },
+  
+  "accessibility": {
+    "enable_subtitles": true,
+    "enable_audio_descriptions": true,
+    "high_contrast_mode": false,
+    "colorblind_mode": "none",
+    "font_size_multiplier": 1.0,
+    "reduce_motion": false
+  },
+  
+  "debug": {
+    "show_fps": false,
+    "show_stats": false,
+    "show_axes": false,
+    "show_grid": true,
+    "show_bounding_boxes": false,
+    "show_wireframe": false,
+    "log_level": "warn"
+  },
+  
+  "assets": {
+    "model_formats": ["gltf", "glb"],
+    "texture_formats": ["jpg", "png", "webp"],
+    "max_model_size_mb": 50,
+    "max_texture_size_mb": 10,
+    "compression_enabled": true,
+    "lazy_loading": true,
+    "preload_models": []
+  },
+  
+  "security": {
+    "enable_cors": true,
+    "allowed_origins": ["*"],
+    "enable_content_security_policy": true,
+    "max_session_duration_minutes": 60,
+    "require_authentication": false
+  },
+  
+  "analytics": {
+    "enabled": true,
+    "track_sessions": true,
+    "track_interactions": true,
+    "track_performance": true,
+    "track_errors": true,
+    "anonymize_data": true
+  }
+}
