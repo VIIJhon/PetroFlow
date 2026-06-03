@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     
     # Application
     APP_NAME: str = "PetroFlow"
-    VERSION: str = "1.0.0"
+    VERSION: str = "3.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     

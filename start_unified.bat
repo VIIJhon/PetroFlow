@@ -11,10 +11,13 @@ echo.
 
 set "ROOT_DIR=%~dp0"
 
-echo [1/2] Compiling React Frontend for Production...
+echo [1/2] Compiling React Frontend for Production (with optimizations)...
 cd /d "%ROOT_DIR%frontend"
 call npm install
+set GENERATE_SOURCEMAP=false
+set DISABLE_ESLINT_PLUGIN=true
 call npm run build
+
 
 if not exist "%ROOT_DIR%frontend\build\index.html" (
     echo.

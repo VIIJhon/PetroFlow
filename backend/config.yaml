@@ -6,7 +6,7 @@
 # Application Settings
 application:
   name: "Petroflow"
-  version: "1.0.0"
+  version: "3.0.0"
   environment: "development"  # development, staging, production
   debug: true
   timezone: "UTC"

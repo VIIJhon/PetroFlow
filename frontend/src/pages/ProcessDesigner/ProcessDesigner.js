@@ -438,6 +438,7 @@ function ProcessDesigner() {
             sourceHandle: 'out',
             target: 'n2',
             targetHandle: 'in',
+            type: 'smoothstep',
             style: { stroke: '#d1d5db', strokeWidth: 2.5 },
           },
           {
@@ -446,6 +447,7 @@ function ProcessDesigner() {
             sourceHandle: 'oil',
             target: 'n3',
             targetHandle: 'in',
+            type: 'smoothstep',
             style: { stroke: '#00e5ff', strokeWidth: 2.5 },
           },
           {
@@ -454,6 +456,7 @@ function ProcessDesigner() {
             sourceHandle: 'gas',
             target: 'n4',
             targetHandle: 'in',
+            type: 'smoothstep',
             style: { stroke: '#ffb300', strokeWidth: 2.5 },
           },
         ],
@@ -471,6 +474,7 @@ function ProcessDesigner() {
             sourceHandle: 'gas',
             target: 'n2',
             targetHandle: 'in',
+            type: 'smoothstep',
             style: { stroke: '#ffb300', strokeWidth: 2.5 },
           },
           {
@@ -479,6 +483,7 @@ function ProcessDesigner() {
             sourceHandle: 'gas',
             target: 'n3',
             targetHandle: 'in',
+            type: 'smoothstep',
             style: { stroke: '#ffb300', strokeWidth: 2.5 },
           },
         ],
@@ -496,6 +501,7 @@ function ProcessDesigner() {
             sourceHandle: 'water',
             target: 'n2',
             targetHandle: 'in',
+            type: 'smoothstep',
             style: { stroke: '#2979ff', strokeWidth: 2.5 },
           },
           {
@@ -504,6 +510,7 @@ function ProcessDesigner() {
             sourceHandle: 'water',
             target: 'n3',
             targetHandle: 'in',
+            type: 'smoothstep',
             style: { stroke: '#2979ff', strokeWidth: 2.5 },
           },
         ],
@@ -581,7 +588,7 @@ function ProcessDesigner() {
         flexDirection: 'column',
         height: 'calc(100vh - 64px)', // Adjust for Toolbar heights
         width: '100%',
-        backgroundColor: '#0d1117',
+        backgroundColor: theme.palette.background.default,
         overflow: 'hidden',
       }}
     >
@@ -590,8 +597,8 @@ function ProcessDesigner() {
         sx={{
           height: 56,
           width: '100%',
-          backgroundColor: '#151b23',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          backgroundColor: theme.palette.background.paper,
+          borderBottom: `1px solid ${theme.palette.divider}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -637,10 +644,10 @@ function ProcessDesigner() {
         <Box
           sx={{
             display: 'flex',
-            backgroundColor: '#0d1117',
+            backgroundColor: theme.palette.background.default,
             p: 0.5,
             borderRadius: '20px',
-            border: '1.5px solid rgba(255, 255, 255, 0.08)',
+            border: `1.5px solid ${theme.palette.divider}`,
           }}
         >
           <Button
@@ -652,11 +659,11 @@ function ProcessDesigner() {
               fontWeight: 'bold',
               px: 3,
               py: 0.5,
-              backgroundColor: opMode === 'design' ? '#00e5ff' : 'transparent',
-              color: opMode === 'design' ? '#000' : '#8b949e',
+              backgroundColor: opMode === 'design' ? (theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main) : 'transparent',
+              color: opMode === 'design' ? (theme.palette.mode === 'dark' ? '#000' : '#fff') : theme.palette.text.secondary,
               '&:hover': {
-                backgroundColor: opMode === 'design' ? '#00b8d4' : 'rgba(255,255,255,0.04)',
-                color: opMode === 'design' ? '#000' : '#fff',
+                backgroundColor: opMode === 'design' ? (theme.palette.mode === 'dark' ? '#00b8d4' : theme.palette.primary.dark) : 'rgba(128,128,128,0.08)',
+                color: opMode === 'design' ? (theme.palette.mode === 'dark' ? '#000' : '#fff') : theme.palette.text.primary,
               },
             }}
           >
@@ -672,10 +679,10 @@ function ProcessDesigner() {
               px: 3,
               py: 0.5,
               backgroundColor: opMode === 'operator' ? '#39ff14' : 'transparent',
-              color: opMode === 'operator' ? '#000' : '#8b949e',
+              color: opMode === 'operator' ? '#000' : theme.palette.text.secondary,
               '&:hover': {
-                backgroundColor: opMode === 'operator' ? '#32e010' : 'rgba(255,255,255,0.04)',
-                color: opMode === 'operator' ? '#000' : '#fff',
+                backgroundColor: opMode === 'operator' ? '#32e010' : 'rgba(128,128,128,0.08)',
+                color: opMode === 'operator' ? '#000' : theme.palette.text.primary,
               },
             }}
           >
@@ -737,7 +744,7 @@ function ProcessDesigner() {
           display: 'flex',
           flexGrow: 1,
           width: '100%',
-          backgroundColor: '#0d1117',
+          backgroundColor: theme.palette.background.default,
           overflow: 'hidden',
         }}
       >
@@ -748,7 +755,7 @@ function ProcessDesigner() {
           height: '100%',
           flexShrink: 0,
           borderRight: `1px solid ${theme.palette.divider}`,
-          backgroundColor: '#0d1117',
+          backgroundColor: theme.palette.background.paper,
           p: 1.5,
         }}
       >
@@ -793,7 +800,7 @@ function ProcessDesigner() {
           height: '100%',
           flexShrink: 0,
           borderLeft: `1px solid ${theme.palette.divider}`,
-          backgroundColor: '#0d1117',
+          backgroundColor: theme.palette.background.paper,
           display: 'flex',
           flexDirection: 'column',
           p: 2,
@@ -802,15 +809,15 @@ function ProcessDesigner() {
         }}
       >
         {/* Toggle Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: 'rgba(255,255,255,0.08)' }}>
+        <Box sx={{ borderBottom: 1, borderColor: theme.palette.divider }}>
           <Tabs
             value={activeTab}
             onChange={(e, newValue) => setActiveTab(newValue)}
             variant="fullWidth"
             sx={{
-              '& .MuiTab-root': { color: '#9ca3af', fontSize: '0.75rem', fontWeight: 'bold', minHeight: 36 },
-              '& .Mui-selected': { color: '#00e5ff !important' },
-              '& .MuiTabs-indicator': { backgroundColor: '#00e5ff' },
+              '& .MuiTab-root': { color: theme.palette.text.secondary, fontSize: '0.75rem', fontWeight: 'bold', minHeight: 36 },
+              '& .Mui-selected': { color: `${theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main} !important` },
+              '& .MuiTabs-indicator': { backgroundColor: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main },
             }}
           >
             <Tab label="Propiedades" />

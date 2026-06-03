@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="PetroFlow API",
     description="Advanced Oil & Gas Production Optimization Platform",
-    version="1.0.0",
+    version="3.0.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json"
@@ -97,7 +97,7 @@ async def health_check():
     """Basic health check endpoint"""
     return {
         "status": "healthy",
-        "version": "1.0.0",
+        "version": "3.0.0",
         "environment": settings.ENVIRONMENT
     }
 
@@ -106,7 +106,7 @@ async def health_check_v2():
     """V2 health check endpoint for demo dashboard"""
     return {
         "status": "online",
-        "version": "1.0.0",
+        "version": "3.0.0",
         "api_version": "v2",
         "environment": settings.ENVIRONMENT,
         "services": {
@@ -204,8 +204,30 @@ app.include_router(
     tags=["Reports V2"]
 )
 
-# Mount static files for React SPA
+# Mount legacy/redesigned static dashboard files and React SPA static assets
+static_path = Path(__file__).parent.parent / "static"
 frontend_build_path = Path(__file__).parent.parent.parent / "frontend" / "build"
+
+@app.get("/static/{file_path:path}")
+async def serve_static_files(file_path: str):
+    """
+    Serve static files, checking backend/static first, and falling back to frontend/build/static.
+    This avoids path collisions between React compiled assets and redesigned static pages.
+    """
+    # 1. Check in backend/static (e.g. index.html, login.html)
+    if static_path.exists():
+        backend_file = static_path / file_path
+        if backend_file.is_file():
+            return FileResponse(backend_file)
+            
+    # 2. Check in frontend/build/static (React compiled JS, CSS, media)
+    if frontend_build_path.exists():
+        frontend_file = frontend_build_path / "static" / file_path
+        if frontend_file.is_file():
+            return FileResponse(frontend_file)
+            
+    return JSONResponse(status_code=404, content={"detail": "Static file not found"})
+
 
 # We define the catch-all SPA route AFTER all API routes have been registered
 @app.get("/{full_path:path}")
@@ -245,7 +267,7 @@ async def startup_event():
     logger.info("=" * 60)
     logger.info("Starting PetroFlow API (Unified Backend/Frontend Mode)...")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
-    logger.info(f"Version: 1.0.0 (Phase 5 - Refactored)")
+    logger.info(f"Version: 3.0.0 (Phase 5 - Refactored)")
     logger.info(f"Debug Mode: {settings.DEBUG}")
     
     # Check database connection

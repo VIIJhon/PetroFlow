@@ -23,6 +23,7 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  useTheme,
 } from '@mui/material';
 import {
   ZoomIn,
@@ -87,6 +88,7 @@ function FlowCanvas({
 }) {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const theme = useTheme();
   
   // Save Dialog and Name States
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -307,8 +309,8 @@ function FlowCanvas({
         width: '100%',
         height: '100%',
         position: 'relative',
-        backgroundColor: '#0d1117',
-        border: '1px solid rgba(255, 255, 255, 0.05)',
+        backgroundColor: theme.palette.background.default,
+        border: `1px solid ${theme.palette.divider}`,
         borderRadius: '8px',
         overflow: 'hidden',
       }}
@@ -357,20 +359,26 @@ function FlowCanvas({
         nodeTypes={nodeTypes}
         onNodeClick={onElementClick}
         onNodeDoubleClick={(event, node) => onNodeDoubleClick && onNodeDoubleClick(node)}
+        snapToGrid={true}
+        snapGrid={[10, 10]}
+        defaultEdgeOptions={{
+          type: 'smoothstep',
+          style: { strokeWidth: 2.5 }
+        }}
         fitView
       >
         {/* Background Grid dots matching HYSYS */}
-        <Background color="#1f242c" gap={20} size={1.5} />
+        <Background color={theme.palette.mode === 'dark' ? '#1f242c' : '#cbd5e1'} gap={20} size={1.5} />
         
         {/* Minimap for clean layout view */}
         <MiniMap
           style={{
-            backgroundColor: '#161b22',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
+            backgroundColor: theme.palette.background.paper,
+            border: `1px solid ${theme.palette.divider}`,
             borderRadius: '6px',
           }}
-          nodeColor={() => '#00e5ff'}
-          maskColor="rgba(13, 17, 23, 0.7)"
+          nodeColor={() => (theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main)}
+          maskColor={theme.palette.mode === 'dark' ? 'rgba(13, 17, 23, 0.7)' : 'rgba(255, 255, 255, 0.6)'}
         />
       </ReactFlow>
 
@@ -383,32 +391,33 @@ function FlowCanvas({
           zIndex: 10,
           display: 'flex',
           gap: 1,
-          backgroundColor: 'rgba(22, 27, 34, 0.85)',
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(22, 27, 34, 0.85)' : 'rgba(255, 255, 255, 0.90)',
           backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
+          border: `1px solid ${theme.palette.divider}`,
           borderRadius: '8px',
           p: 0.8,
+          boxShadow: theme.palette.mode === 'dark' ? '0 4px 20px rgba(0,0,0,0.5)' : '0 4px 20px rgba(15,23,42,0.08)',
         }}
       >
-        <ButtonGroup size="small" variant="text" sx={{ color: '#fff' }}>
+        <ButtonGroup size="small" variant="text" sx={{ color: theme.palette.text.primary }}>
           <Tooltip title="Aumentar Zoom">
-            <IconButton onClick={() => reactFlowInstance?.zoomIn()} sx={{ color: '#00e5ff' }}>
+            <IconButton onClick={() => reactFlowInstance?.zoomIn()} sx={{ color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main }}>
               <ZoomIn />
             </IconButton>
           </Tooltip>
           <Tooltip title="Disminuir Zoom">
-            <IconButton onClick={() => reactFlowInstance?.zoomOut()} sx={{ color: '#00e5ff' }}>
+            <IconButton onClick={() => reactFlowInstance?.zoomOut()} sx={{ color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main }}>
               <ZoomOut />
             </IconButton>
           </Tooltip>
           <Tooltip title="Ajustar Vista">
-            <IconButton onClick={() => reactFlowInstance?.fitView()} sx={{ color: '#00e5ff' }}>
+            <IconButton onClick={() => reactFlowInstance?.fitView()} sx={{ color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main }}>
               <AspectRatio />
             </IconButton>
           </Tooltip>
         </ButtonGroup>
 
-        <Box sx={{ width: 1, height: 24, alignSelf: 'center', backgroundColor: 'rgba(255,255,255,0.1)', mx: 1 }} />
+        <Box sx={{ width: 1, height: 24, alignSelf: 'center', backgroundColor: theme.palette.divider, mx: 1 }} />
 
         <ButtonGroup size="small">
           <Tooltip title="Guardar en SQLite (Ctrl+S)">
@@ -416,9 +425,12 @@ function FlowCanvas({
               onClick={handleSaveClick}
               startIcon={<Save />}
               sx={{
-                color: '#fff',
-                borderColor: 'rgba(255,255,255,0.1)',
-                '&:hover': { borderColor: '#00e5ff', backgroundColor: 'rgba(0, 229, 255, 0.04)' },
+                color: theme.palette.text.primary,
+                borderColor: theme.palette.divider,
+                '&:hover': {
+                  borderColor: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main,
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 229, 255, 0.04)' : 'rgba(0, 102, 204, 0.04)'
+                },
               }}
             >
               {diagramName ? `Guardar (${diagramName})` : 'Guardar'}
@@ -433,9 +445,9 @@ function FlowCanvas({
                 height: 22,
                 fontSize: '0.65rem',
                 fontWeight: 'bold',
-                backgroundColor: 'rgba(0,229,255,0.15)',
-                color: '#00e5ff',
-                border: '1px solid rgba(0,229,255,0.3)',
+                backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.15)' : 'rgba(0,102,204,0.12)',
+                color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main,
+                border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.3)' : 'rgba(0,102,204,0.2)'}`,
                 alignSelf: 'center',
                 ml: 0.5,
               }}
@@ -446,9 +458,12 @@ function FlowCanvas({
               onClick={handleExportJSON}
               startIcon={<GetApp />}
               sx={{
-                color: '#fff',
-                borderColor: 'rgba(255,255,255,0.1)',
-                '&:hover': { borderColor: '#00e5ff', backgroundColor: 'rgba(0, 229, 255, 0.04)' },
+                color: theme.palette.text.primary,
+                borderColor: theme.palette.divider,
+                '&:hover': {
+                  borderColor: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main,
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 229, 255, 0.04)' : 'rgba(0, 102, 204, 0.04)'
+                },
               }}
             >
               Exportar

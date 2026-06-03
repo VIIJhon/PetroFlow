@@ -126,8 +126,10 @@ async def login(
     )
     
     try:
-        # Get user from database
-        user = db.query(User).filter(User.username == form_data.username).first()
+        # Get user from database (supports username or email login)
+        user = db.query(User).filter(
+            (User.username == form_data.username) | (User.email == form_data.username)
+        ).first()
         if not user or not verify_password(form_data.password, user.hashed_password):
             raise credentials_exception
             

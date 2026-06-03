@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Paper, Grid } from '@mui/material';
+import { Box, Typography, Paper, useTheme } from '@mui/material';
 import { LocalFireDepartment, AccountTree, Water, Settings, Bolt, Autorenew, Adjust } from '@mui/icons-material';
 
 const paletteItems = [
@@ -16,10 +16,16 @@ const paletteItems = [
  * PalettePanel — Paleta lateral de equipos para arrastrar al P&ID.
  */
 function PalettePanel() {
+  const theme = useTheme();
+
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
   };
+
+  const isDark = theme.palette.mode === 'dark';
+  const primaryColor = isDark ? '#00e5ff' : theme.palette.primary.main;
+  const hoverBg = isDark ? 'rgba(0, 229, 255, 0.08)' : 'rgba(0, 102, 204, 0.06)';
 
   return (
     <Paper
@@ -27,17 +33,17 @@ function PalettePanel() {
       sx={{
         width: '100%',
         height: '100%',
-        backgroundColor: '#161b22',
-        border: '1px solid rgba(255, 255, 255, 0.05)',
+        backgroundColor: 'transparent',
+        border: 'none',
         borderRadius: '8px',
-        p: 2,
+        p: 0.5,
         overflowY: 'auto',
       }}
     >
-      <Typography variant="subtitle2" fontWeight={800} sx={{ color: '#00e5ff', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <Typography variant="subtitle2" fontWeight={800} sx={{ color: primaryColor, mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         Equipos de Proceso
       </Typography>
-      <Typography variant="caption" sx={{ color: '#9ca3af', display: 'block', mb: 2 }}>
+      <Typography variant="caption" sx={{ color: theme.palette.text.secondary, display: 'block', mb: 2 }}>
         Arrastre los elementos al lienzo para construir su diagrama P&ID.
       </Typography>
 
@@ -49,8 +55,8 @@ function PalettePanel() {
             onDragStart={(event) => onDragStart(event, item.type)}
             sx={{
               p: 1.5,
-              backgroundColor: '#0d1117',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
+              backgroundColor: theme.palette.background.default,
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: '6px',
               cursor: 'grab',
               display: 'flex',
@@ -58,8 +64,8 @@ function PalettePanel() {
               gap: 1.5,
               transition: 'all 0.15s',
               '&:hover': {
-                borderColor: '#00e5ff',
-                backgroundColor: 'rgba(0, 229, 255, 0.04)',
+                borderColor: primaryColor,
+                backgroundColor: hoverBg,
                 transform: 'translateX(2px)',
               },
               '&:active': {
@@ -70,9 +76,9 @@ function PalettePanel() {
             <Box
               sx={{
                 p: 1,
-                backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
                 borderRadius: '6px',
-                color: '#00e5ff',
+                color: primaryColor,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -81,13 +87,13 @@ function PalettePanel() {
               {item.icon}
             </Box>
             <Box sx={{ overflow: 'hidden' }}>
-              <Typography variant="body2" fontWeight={700} sx={{ color: '#ffffff', fontSize: '0.85rem' }}>
+              <Typography variant="body2" fontWeight={700} sx={{ color: theme.palette.text.primary, fontSize: '0.85rem' }}>
                 {item.label}
               </Typography>
               <Typography
                 variant="caption"
                 sx={{
-                  color: '#9ca3af',
+                  color: theme.palette.text.secondary,
                   fontSize: '0.7rem',
                   display: 'block',
                   whiteSpace: 'nowrap',
