@@ -10,8 +10,19 @@ import json
 import numpy as np
 import plotly.graph_objects as go
 from pathlib import Path
-import trimesh
-from pygltflib import GLTF2
+try:
+    import trimesh
+    TRIMESH_AVAILABLE = True
+except ImportError:
+    trimesh = None
+    TRIMESH_AVAILABLE = False
+
+try:
+    from pygltflib import GLTF2
+    PYGLTFLIB_AVAILABLE = True
+except ImportError:
+    GLTF2 = None
+    PYGLTFLIB_AVAILABLE = False
 import base64
 from typing import Dict, List, Tuple, Optional, Any
 
@@ -75,6 +86,8 @@ def load_gltf_model(file_path: str) -> Dict[str, Any]:
             }
         
         # Load using trimesh for easier mesh extraction
+        if not TRIMESH_AVAILABLE:
+            return {'success': False, 'error': 'trimesh not installed. Run: pip install trimesh', 'meshes': [], 'materials': [], 'nodes': [], 'metadata': {}}
         scene = trimesh.load(file_path, force='scene')
         
         meshes = []

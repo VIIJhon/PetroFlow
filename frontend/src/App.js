@@ -35,6 +35,10 @@ import ArtificialLift from './pages/Analysis/ArtificialLift';
 import DigitalTwin from './pages/Analysis/DigitalTwin';
 
 // Modulos secundarios
+import MonteCarloAnalysis from './pages/Risk/MonteCarloAnalysis';
+import FMEAAnalysis from './pages/Risk/FMEAAnalysis';
+import FaultTreeAnalysis from './pages/Risk/FaultTreeAnalysis';
+import RULAnalysis from './pages/Risk/RULAnalysis';
 import MLOpsPage from './pages/MLOps/MLOpsPage';
 import ComplianceAudit from './pages/Compliance/ComplianceAudit';
 import CybersecurityDashboard from './pages/Compliance/CybersecurityDashboard';
@@ -98,7 +102,7 @@ function App() {
       viewComponent = <EquipmentList />;
       break;
     case 'library':
-      viewComponent = <EquipmentList />;
+      viewComponent = <ComplianceAudit />;
       break;
 
     // ── SIMULAR ─────────────────────────────────────────────────────────
@@ -145,12 +149,17 @@ function App() {
       break;
 
     // ── RIESGO ──────────────────────────────────────────────────────────
-    // Placeholders — se implementarán en la Fase 3
     case 'fmea':
+      viewComponent = <FMEAAnalysis />;
+      break;
     case 'fta':
+      viewComponent = <FaultTreeAnalysis />;
+      break;
     case 'rul':
+      viewComponent = <RULAnalysis />;
+      break;
     case 'monteCarlo':
-      viewComponent = <Dashboard />;
+      viewComponent = <MonteCarloAnalysis />;
       break;
 
     // ── OPERAR ──────────────────────────────────────────────────────────

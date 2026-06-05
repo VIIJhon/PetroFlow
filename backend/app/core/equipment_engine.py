@@ -465,9 +465,30 @@ class EquipmentEngine:
             except ValueError:
                 pass
         
+        total = query.count()
         equipment_list = query.offset(skip).limit(limit).all()
+        self._last_query_count = total
         return [eq.to_dict() for eq in equipment_list]
-    
+
+    def count_equipment(
+        self,
+        equipment_type: Optional[str] = None,
+        user_id: Optional[int] = None
+    ) -> int:
+        """
+        Count equipment entries for pagination.
+        """
+        query = self.db.query(Equipment)
+        if user_id is not None:
+            query = query.filter(Equipment.owner_id == user_id)
+        if equipment_type is not None:
+            try:
+                eq_type = EquipmentType(equipment_type)
+                query = query.filter(Equipment.equipment_type == eq_type)
+            except ValueError:
+                pass
+        return query.count()
+
     def get_equipment(self, equipment_id: int, user_id: int) -> Optional[Dict[str, Any]]:
         """
         Get specific equipment configuration from the database.

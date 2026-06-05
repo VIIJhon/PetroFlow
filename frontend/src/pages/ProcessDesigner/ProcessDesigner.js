@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Box, Divider, useTheme, Tab, Tabs, Typography, Button } from '@mui/material';
+import { Box, Chip, Divider, useTheme, Tab, Tabs, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNodesState, useEdgesState } from 'reactflow';
@@ -39,8 +39,6 @@ function ProcessDesigner() {
   // State
   const [properties, setProperties] = useState(defaultProperties);
   const [isSimulating, setIsSimulating] = useState(false);
-  const [simulationResults, setSimulationResults] = useState(null);
-  
   // ReactFlow Nodes and Edges State
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -87,7 +85,7 @@ function ProcessDesigner() {
           nds.map((node) => {
             const isPump = node.type === 'pump' || node.id.includes('pump');
             const isCompressor = node.type === 'compressor' || node.id.includes('compressor');
-            const isWell = node.type === 'wellhead' || node.id.includes('well') || node.id.includes('source');
+            const isWell = node.type === 'well' || node.id.includes('well') || node.id.includes('source');
             const isValve = node.type === 'valve' || node.id.includes('valve');
             
             let status = 'normal';
@@ -173,7 +171,6 @@ function ProcessDesigner() {
   const handleRunSimulation = useCallback(async () => {
     if (isSimulating) {
       setIsSimulating(false);
-      setSimulationResults(null);
       setWaterHammerActive(false);
       setNodes((nds) =>
         nds.map((node) => ({
@@ -317,7 +314,6 @@ function ProcessDesigner() {
         setWaterHammerActive(false);
       }
 
-      setSimulationResults(data);
       setIsSimulating(true);
 
       // 6. Overlay solver results onto ReactFlow nodes
@@ -607,20 +603,25 @@ function ProcessDesigner() {
         }}
       >
         {/* Left branding */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 900,
-              letterSpacing: 1.5,
-              background: 'linear-gradient(90deg, #00e5ff 0%, #e040fb 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontSize: '1.2rem',
-            }}
-          >
-            PETROFLOW
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 900,
+                letterSpacing: 1.5,
+                background: 'linear-gradient(90deg, #00e5ff 0%, #e040fb 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontSize: '1.2rem',
+              }}
+            >
+              PETROFLOW
+            </Typography>
+            <Typography variant="caption" sx={{ color: theme.palette.text.secondary, display: 'block', mt: 0.5, letterSpacing: 0.15, textTransform: 'uppercase' }}>
+              Studio P&ID profesional para ingeniería de procesos
+            </Typography>
+          </Box>
           <Typography
             variant="caption"
             sx={{
@@ -636,7 +637,7 @@ function ProcessDesigner() {
               transition: 'all 0.3s ease',
             }}
           >
-            {opMode === 'operator' ? '● OT: MONITOR EN VIVO (OPEX)' : '📐 DISEÑO CAD/MODELO (CAPEX)'}
+            {opMode === 'operator' ? '● OT: MONITOR EN VIVO (OPEX)' : '📐 DISEÑO CAPEX'}
           </Typography>
         </Box>
 
@@ -738,6 +739,7 @@ function ProcessDesigner() {
         </Box>
       </Box>
 
+
       {/* ── SECOND ROW: THREE COLUMN WORKSPACE ── */}
       <Box
         sx={{
@@ -748,15 +750,17 @@ function ProcessDesigner() {
           overflow: 'hidden',
         }}
       >
-        {/* Column 1: Left Drag & Drop Equipment Palette */}
+        {/* Column 1: Left Equipment Palette — narrow icon grid like HYSYS */}
       <Box
         sx={{
-          width: 240,
+          width: 190,
           height: '100%',
           flexShrink: 0,
           borderRight: `1px solid ${theme.palette.divider}`,
           backgroundColor: theme.palette.background.paper,
-          p: 1.5,
+          p: 1.25,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <PalettePanel />
@@ -767,7 +771,7 @@ function ProcessDesigner() {
         sx={{
           flexGrow: 1,
           height: '100%',
-          p: 1.5,
+          p: 1,
           minWidth: 0,
           display: 'flex',
           flexDirection: 'column',

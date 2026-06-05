@@ -20,20 +20,30 @@ __version__ = "2.0.0"
 __author__ = "Jhon Villegas"
 __package_name__ = "petroflow.core"
 
-from . import settings
-from . import database
-from . import failure_prediction_engine
-from . import excel_data_ingestion
-# ui_components and maintenance_management_system are deprecated/removed in the backend migration
-# from . import ui_components
-from . import viewer_3d
-# from . import maintenance_management_system
-from . import audit_logging_service
-from . import mqtt_telemetry_client
-from . import unit_converter        # Comprehensive unit conversion engine
-from . import power_source_analysis  # Power-source-specific models for Pump, Compressor
-from . import power_source_turbine_analysis  # Power-source-specific Turbine models
-from . import physical_validator    # NEW: fail-safe input validation
+import logging as _logging
+_log = _logging.getLogger(__name__)
+
+def _safe_import(name):
+    try:
+        import importlib
+        mod = importlib.import_module(f'.{name}', package=__name__)
+        globals()[name] = mod
+        return mod
+    except Exception as e:
+        _log.warning(f"[PetroFlow] Optional core module '{name}' could not be loaded: {e}")
+        return None
+
+settings                      = _safe_import('settings')
+database                      = _safe_import('database')
+failure_prediction_engine     = _safe_import('failure_prediction_engine')
+excel_data_ingestion          = _safe_import('excel_data_ingestion')
+viewer_3d                     = _safe_import('viewer_3d')
+audit_logging_service         = _safe_import('audit_logging_service')
+mqtt_telemetry_client         = _safe_import('mqtt_telemetry_client')
+unit_converter                = _safe_import('unit_converter')
+power_source_analysis         = _safe_import('power_source_analysis')
+power_source_turbine_analysis = _safe_import('power_source_turbine_analysis')
+physical_validator            = _safe_import('physical_validator')
 
 # Enterprise naming aliases (public API)
 __all__ = [

@@ -4,7 +4,7 @@ Handles user authentication, registration, MFA/TOTP lifecycle, and Google OAuth
 Authored by Jhon Villegas
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
@@ -112,7 +112,7 @@ async def register(
 
 @router.post("/login", response_model=Token)
 async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    request: Request,
     db: Session = Depends(get_db)
 ):
     """
@@ -124,13 +124,29 @@ async def login(
         detail="Incorrect username or password",
         headers={"WWW-Authenticate": "Bearer"}
     )
-    
+
     try:
+        content_type = request.headers.get("content-type", "")
+        username = None
+        password = None
+
+        if "application/json" in content_type:
+            payload = await request.json()
+            username = payload.get("username")
+            password = payload.get("password")
+        else:
+            form_data = await request.form()
+            username = form_data.get("username")
+            password = form_data.get("password")
+
+        if not username or not password:
+            raise credentials_exception
+
         # Get user from database (supports username or email login)
         user = db.query(User).filter(
-            (User.username == form_data.username) | (User.email == form_data.username)
+            (User.username == username) | (User.email == username)
         ).first()
-        if not user or not verify_password(form_data.password, user.hashed_password):
+        if not user or not verify_password(password, user.hashed_password):
             raise credentials_exception
             
         if not user.is_active:
@@ -168,7 +184,17 @@ async def login(
         return Token(
             access_token=access_token,
             refresh_token=refresh_token,
-            mfa_required=False
+            mfa_required=False,
+            user={
+                "id": user.id,
+                "email": user.email,
+                "username": user.username,
+                "full_name": user.full_name,
+                "is_active": user.is_active,
+                "role": user.role.value,
+                "is_admin": user.role == UserRole.ADMIN,
+                "created_at": user.created_at,
+            }
         )
     except HTTPException:
         raise

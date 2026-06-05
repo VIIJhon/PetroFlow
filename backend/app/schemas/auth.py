@@ -47,6 +47,7 @@ class Token(BaseModel):
     token_type: str = "bearer"
     mfa_required: bool = False
     temp_token: Optional[str] = None
+    user: Optional[UserResponse] = None
 
 
 class TokenData(BaseModel):

@@ -94,6 +94,8 @@ async def create_equipment(
 async def list_equipment(
     skip: int = 0,
     limit: int = 100,
+    page: Optional[int] = None,
+    page_size: Optional[int] = None,
     equipment_type: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -103,14 +105,31 @@ async def list_equipment(
     Authored by Jhon Villegas
     """
     try:
+        if page is not None or page_size is not None:
+            page = page or 1
+            limit = page_size or limit
+            skip = max((page - 1) * limit, 0)
+        else:
+            page = (skip // limit) + 1 if limit > 0 else 1
+            page_size = limit
+
         engine = EquipmentEngine(db)
+        total = engine.count_equipment(
+            equipment_type=equipment_type,
+            user_id=current_user.id
+        )
         equipment_list = engine.list_equipment(
             skip=skip,
             limit=limit,
             equipment_type=equipment_type,
             user_id=current_user.id
         )
-        return {"equipment": equipment_list, "total": len(equipment_list)}
+        return {
+            "equipment": equipment_list,
+            "total": total,
+            "page": page,
+            "page_size": limit,
+        }
     except Exception as e:
         logger.error(f"Error listing equipment: {e}")
         raise HTTPException(

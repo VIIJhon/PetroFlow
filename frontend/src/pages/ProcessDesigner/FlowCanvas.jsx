@@ -2,11 +2,10 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
-  useNodesState,
-  useEdgesState,
-  Controls,
   Background,
+  BackgroundVariant,
   MiniMap,
+  Controls,
   MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -24,18 +23,16 @@ import {
   DialogActions,
   TextField,
   useTheme,
+  Divider,
 } from '@mui/material';
 import {
   ZoomIn,
   ZoomOut,
   AspectRatio,
   Save,
-  FolderOpen,
   Delete,
-  PlayArrow,
-  Stop,
-  Publish,
   GetApp,
+  FitScreen,
 } from '@mui/icons-material';
 
 // Import Custom Node Types
@@ -47,16 +44,18 @@ import {
   ValveNode,
   HeatExchangerNode,
   TankNode,
+  ColumnNode,
 } from './nodes/CustomNodes';
 
 const nodeTypes = {
-  wellhead: WellNode,
+  well: WellNode,
   separator: SeparatorNode,
   pump: PumpNode,
   compressor: CompressorNode,
   valve: ValveNode,
-  exchanger: HeatExchangerNode,
+  heat_exchanger: HeatExchangerNode,
   tank: TankNode,
+  column: ColumnNode,
 };
 
 // Unique ID Generator
@@ -309,10 +308,11 @@ function FlowCanvas({
         width: '100%',
         height: '100%',
         position: 'relative',
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.mode === 'dark' ? '#08101c' : '#f0f5ff',
         border: `1px solid ${theme.palette.divider}`,
-        borderRadius: '8px',
+        borderRadius: '10px',
         overflow: 'hidden',
+        boxShadow: theme.palette.mode === 'dark' ? '0 0 0 1px rgba(0,229,255,0.06) inset, 0 20px 60px rgba(0,0,0,0.5)' : '0 8px 32px rgba(15,23,42,0.10)',
       }}
     >
       <style>{`
@@ -356,126 +356,212 @@ function FlowCanvas({
         onInit={setReactFlowInstance}
         onDrop={onDrop}
         onDragOver={onDragOver}
-        nodeTypes={nodeTypes}
+        nodeTypes={{ ...nodeTypes, column: ColumnNode }}
         onNodeClick={onElementClick}
         onNodeDoubleClick={(event, node) => onNodeDoubleClick && onNodeDoubleClick(node)}
         snapToGrid={true}
-        snapGrid={[10, 10]}
+        snapGrid={[15, 15]}
         defaultEdgeOptions={{
           type: 'smoothstep',
-          style: { strokeWidth: 2.5 }
+          style: { strokeWidth: 2.5, stroke: '#d1d5db' },
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#d1d5db' }
         }}
+        proOptions={{ hideAttribution: true }}
         fitView
       >
-        {/* Background Grid dots matching HYSYS */}
-        <Background color={theme.palette.mode === 'dark' ? '#1f242c' : '#cbd5e1'} gap={20} size={1.5} />
+        <Background
+          variant={BackgroundVariant.Dots}
+          color={theme.palette.mode === 'dark' ? '#222222' : '#c7d8f0'}
+          gap={20}
+          size={1.2}
+        />
+
+        <Background
+          variant={BackgroundVariant.Lines}
+          color={theme.palette.mode === 'dark' ? '#0f2035' : '#dce8f8'}
+          gap={100}
+          style={{ opacity: 0.4 }}
+        />
         
-        {/* Minimap for clean layout view */}
+        {/* Native ReactFlow controls (hidden, we use custom HUD instead) */}
+        <Controls
+          showInteractive={false}
+          style={{ display: 'none' }}
+        />
+
+        {/* Minimap */}
         <MiniMap
           style={{
-            backgroundColor: theme.palette.background.paper,
-            border: `1px solid ${theme.palette.divider}`,
+            backgroundColor: theme.palette.mode === 'dark' ? '#0a1525' : '#f0f5ff',
+            border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.2)' : theme.palette.divider}`,
             borderRadius: '6px',
+            bottom: 16,
+            right: 16,
           }}
-          nodeColor={() => (theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main)}
-          maskColor={theme.palette.mode === 'dark' ? 'rgba(13, 17, 23, 0.7)' : 'rgba(255, 255, 255, 0.6)'}
+          nodeColor={() => (theme.palette.mode === 'dark' ? '#00e5ff' : '#0066cc')}
+          maskColor={theme.palette.mode === 'dark' ? 'rgba(8,16,28,0.75)' : 'rgba(240,245,255,0.7)'}
         />
       </ReactFlow>
 
-      {/* Floating Premium Controls HUD */}
+      {/* ── Floating Controls HUD — top center (like HYSYS) ── */}
       <Box
         sx={{
           position: 'absolute',
-          top: 16,
-          left: 16,
+          top: 12,
+          left: '50%',
+          transform: 'translateX(-50%)',
           zIndex: 10,
           display: 'flex',
-          gap: 1,
-          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(22, 27, 34, 0.85)' : 'rgba(255, 255, 255, 0.90)',
-          backdropFilter: 'blur(8px)',
-          border: `1px solid ${theme.palette.divider}`,
+          alignItems: 'center',
+          gap: 0,
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(10,18,32,0.92)' : 'rgba(240,246,255,0.95)',
+          backdropFilter: 'blur(12px)',
+          border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.18)' : 'rgba(0,102,204,0.18)'}`,
           borderRadius: '8px',
-          p: 0.8,
-          boxShadow: theme.palette.mode === 'dark' ? '0 4px 20px rgba(0,0,0,0.5)' : '0 4px 20px rgba(15,23,42,0.08)',
+          overflow: 'hidden',
+          boxShadow: theme.palette.mode === 'dark' ? '0 4px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.08) inset' : '0 4px 20px rgba(15,23,42,0.12)',
         }}
       >
-        <ButtonGroup size="small" variant="text" sx={{ color: theme.palette.text.primary }}>
-          <Tooltip title="Aumentar Zoom">
-            <IconButton onClick={() => reactFlowInstance?.zoomIn()} sx={{ color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main }}>
-              <ZoomIn />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Disminuir Zoom">
-            <IconButton onClick={() => reactFlowInstance?.zoomOut()} sx={{ color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main }}>
-              <ZoomOut />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Ajustar Vista">
-            <IconButton onClick={() => reactFlowInstance?.fitView()} sx={{ color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main }}>
-              <AspectRatio />
-            </IconButton>
-          </Tooltip>
-        </ButtonGroup>
-
-        <Box sx={{ width: 1, height: 24, alignSelf: 'center', backgroundColor: theme.palette.divider, mx: 1 }} />
-
-        <ButtonGroup size="small">
-          <Tooltip title="Guardar en SQLite (Ctrl+S)">
-            <Button
-              onClick={handleSaveClick}
-              startIcon={<Save />}
-              sx={{
-                color: theme.palette.text.primary,
-                borderColor: theme.palette.divider,
-                '&:hover': {
-                  borderColor: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main,
-                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 229, 255, 0.04)' : 'rgba(0, 102, 204, 0.04)'
-                },
-              }}
-            >
-              {diagramName ? `Guardar (${diagramName})` : 'Guardar'}
-            </Button>
-          </Tooltip>
-          {/* Version Badge */}
-          {diagramVersion && (
-            <Chip
-              label={`v${diagramVersion}`}
+        {/* View controls group */}
+        {[
+          { icon: <ZoomIn sx={{ fontSize: 16 }} />, fn: () => reactFlowInstance?.zoomIn(), tip: 'Zoom In' },
+          { icon: <ZoomOut sx={{ fontSize: 16 }} />, fn: () => reactFlowInstance?.zoomOut(), tip: 'Zoom Out' },
+          { icon: <FitScreen sx={{ fontSize: 16 }} />, fn: () => reactFlowInstance?.fitView({ padding: 0.15 }), tip: 'Fit View' },
+        ].map(({ icon, fn, tip }, i) => (
+          <Tooltip key={i} title={tip} placement="bottom">
+            <IconButton
               size="small"
+              onClick={fn}
               sx={{
-                height: 22,
-                fontSize: '0.65rem',
-                fontWeight: 'bold',
-                backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.15)' : 'rgba(0,102,204,0.12)',
-                color: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main,
-                border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.3)' : 'rgba(0,102,204,0.2)'}`,
-                alignSelf: 'center',
-                ml: 0.5,
-              }}
-            />
-          )}
-          <Tooltip title="Exportar P&ID (.json)">
-            <Button
-              onClick={handleExportJSON}
-              startIcon={<GetApp />}
-              sx={{
-                color: theme.palette.text.primary,
-                borderColor: theme.palette.divider,
+                borderRadius: 0,
+                px: 1.5,
+                py: 1,
+                color: theme.palette.mode === 'dark' ? '#8b949e' : '#475569',
                 '&:hover': {
-                  borderColor: theme.palette.mode === 'dark' ? '#00e5ff' : theme.palette.primary.main,
-                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 229, 255, 0.04)' : 'rgba(0, 102, 204, 0.04)'
+                  color: theme.palette.mode === 'dark' ? '#00e5ff' : '#0066cc',
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.08)' : 'rgba(0,102,204,0.08)',
                 },
               }}
             >
-              Exportar
-            </Button>
-          </Tooltip>
-          <Tooltip title="Limpiar Lienzo">
-            <IconButton onClick={handleClear} sx={{ color: '#ef4444' }}>
-              <Delete />
+              {icon}
             </IconButton>
           </Tooltip>
-        </ButtonGroup>
+        ))}
+
+        {/* Separator */}
+        <Box sx={{ width: 1, height: 22, backgroundColor: theme.palette.divider, mx: 0.25 }} />
+
+        {/* Label: Controls HUD */}
+        <Typography
+          variant="caption"
+          sx={{
+            color: theme.palette.text.disabled,
+            fontSize: '0.62rem',
+            px: 1.5,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+          }}
+        >
+          Controls HUD
+        </Typography>
+
+        {/* Separator */}
+        <Box sx={{ width: 1, height: 22, backgroundColor: theme.palette.divider, mx: 0.25 }} />
+
+        {/* Action buttons */}
+        <Tooltip title="Guardar (Ctrl+S)" placement="bottom">
+          <IconButton
+            size="small"
+            onClick={handleSaveClick}
+            sx={{
+              borderRadius: 0,
+              px: 1.5,
+              py: 1,
+              color: theme.palette.mode === 'dark' ? '#8b949e' : '#475569',
+              '&:hover': { color: '#39ff14', backgroundColor: 'rgba(57,255,20,0.08)' },
+            }}
+          >
+            <Save sx={{ fontSize: 16 }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Exportar JSON" placement="bottom">
+          <IconButton
+            size="small"
+            onClick={handleExportJSON}
+            sx={{
+              borderRadius: 0,
+              px: 1.5,
+              py: 1,
+              color: theme.palette.mode === 'dark' ? '#8b949e' : '#475569',
+              '&:hover': { color: theme.palette.mode === 'dark' ? '#00e5ff' : '#0066cc', backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.08)' : 'rgba(0,102,204,0.08)' },
+            }}
+          >
+            <GetApp sx={{ fontSize: 16 }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Limpiar Lienzo" placement="bottom">
+          <IconButton
+            size="small"
+            onClick={handleClear}
+            sx={{
+              borderRadius: 0,
+              px: 1.5,
+              py: 1,
+              color: theme.palette.mode === 'dark' ? '#8b949e' : '#475569',
+              '&:hover': { color: '#ef4444', backgroundColor: 'rgba(239,68,68,0.08)' },
+            }}
+          >
+            <Delete sx={{ fontSize: 16 }} />
+          </IconButton>
+        </Tooltip>
+
+        {/* Close / X button */}
+        <Box sx={{ width: 1, height: 22, backgroundColor: theme.palette.divider, mx: 0.25 }} />
+        <Tooltip title="Cerrar HUD" placement="bottom">
+          <IconButton
+            size="small"
+            sx={{
+              borderRadius: 0,
+              px: 1.5,
+              py: 1,
+              color: theme.palette.mode === 'dark' ? '#555' : '#aaa',
+              '&:hover': { color: '#ef4444' },
+            }}
+          >
+            <Typography sx={{ fontSize: '14px', lineHeight: 1 }}>✕</Typography>
+          </IconButton>
+        </Tooltip>
       </Box>
+
+      {/* Version chip — bottom left */}
+      {diagramVersion && (
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 16,
+            left: 16,
+            zIndex: 10,
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.1)' : 'rgba(0,102,204,0.1)',
+            border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(0,229,255,0.25)' : 'rgba(0,102,204,0.25)'}`,
+            borderRadius: '4px',
+            px: 1,
+            py: 0.25,
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              color: theme.palette.mode === 'dark' ? '#00e5ff' : '#0066cc',
+              fontWeight: 700,
+              fontSize: '0.6rem',
+              letterSpacing: '0.06em',
+            }}
+          >
+            {diagramName || 'Untitled'} — v{diagramVersion}
+          </Typography>
+        </Box>
+      )}
 
       {/* ── SAVE DIAGRAM DIALOG (SQLite Persistence) ── */}
       <Dialog

@@ -57,7 +57,7 @@ const Table = ({
     );
   }
 
-  if (!data || data.length === 0) {
+  if (!Array.isArray(data) || data.length === 0) {
     return (
       <Paper sx={{ p: 3, textAlign: 'center' }}>
         <Typography color="text.secondary">{emptyMessage}</Typography>

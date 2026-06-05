@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../services/api';
+import api, { authAPI } from '../../services/api';
 
 /**
  * Authentication Slice
@@ -26,24 +26,22 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ username, password }, { rejectWithValue }) => {
     try {
-      const formData = new URLSearchParams();
-      formData.append('username', username);
-      formData.append('password', password);
-      
-      const response = await api.post('/api/auth/login', formData, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      });
+      const response = await authAPI.login({ username, password });
       const { access_token, refresh_token, user } = response.data;
       
       // Store tokens in localStorage
       localStorage.setItem('access_token', access_token);
       localStorage.setItem('refresh_token', refresh_token);
       
-      return { token: access_token, refreshToken: refresh_token, user };
+      let resolvedUser = user;
+      if (!resolvedUser) {
+        const profileResponse = await api.get('/api/auth/me');
+        resolvedUser = profileResponse.data;
+      }
+      
+      return { token: access_token, refreshToken: refresh_token, user: resolvedUser };
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed');
+      return rejectWithValue(error.response?.data?.detail || error.response?.data?.message || 'Login failed');
     }
   }
 );

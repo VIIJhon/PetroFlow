@@ -129,11 +129,12 @@ const equipmentSlice = createSlice({
       })
       .addCase(fetchEquipmentList.fulfilled, (state, action) => {
         state.loading = false;
-        state.equipmentList = action.payload.items || action.payload;
+        const payload = action.payload || {};
+        state.equipmentList = payload.equipment || payload.items || payload || [];
         state.pagination = {
-          page: action.payload.page || 1,
-          pageSize: action.payload.page_size || 20,
-          total: action.payload.total || action.payload.length,
+          page: payload.page || 1,
+          pageSize: payload.page_size || payload.pageSize || 20,
+          total: payload.total || (Array.isArray(payload) ? payload.length : 0),
         };
       })
       .addCase(fetchEquipmentList.rejected, (state, action) => {

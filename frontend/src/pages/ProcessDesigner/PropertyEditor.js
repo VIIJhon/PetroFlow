@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   Box,
+  Chip,
   Typography,
   Paper,
-  Divider,
   TextField,
   FormControl,
   Select,
@@ -69,20 +69,52 @@ function PropertyEditor({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'transparent',
+        backgroundColor: theme.palette.mode === 'dark' ? '#0d1117' : '#f8fafc',
+        borderLeft: `1px solid ${theme.palette.divider}`,
+        borderRadius: 0,
+        p: 2,
       }}
     >
       {/* Title */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 500, color: theme.palette.text.primary }}>
-          Properties
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ cursor: 'pointer' }}>
-          ✕
-        </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2, gap: 1.5 }}>
+        <Box>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
+            Property Editor
+          </Typography>
+          <Typography variant="caption" sx={{ color: theme.palette.text.secondary, display: 'block', mt: 0.5, letterSpacing: 0.15 }}>
+            {selectedNode
+              ? `${selectedNode.data?.label || 'Equipo seleccionado'} · ${selectedNode.type?.replace(/([A-Z])/g, ' $1') || 'Componente'}`
+              : 'Seleccione un equipo en el lienzo para editar parámetros técnicos.'}
+          </Typography>
+        </Box>
+        {selectedNode && (
+          <Chip
+            label={selectedNode.type?.toUpperCase()}
+            size="small"
+            sx={{
+              color: '#5EBAFF',
+              borderColor: '#5EBAFF',
+              borderWidth: 1,
+              borderStyle: 'solid',
+              backgroundColor: theme.palette.mode === 'dark' ? 'rgba(94,186,255,0.08)' : 'rgba(94,186,255,0.12)',
+              fontWeight: 'bold',
+            }}
+          />
+        )}
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2.25,
+          p: 1.5,
+          backgroundColor: theme.palette.mode === 'dark' ? '#090d13' : '#f1f5f9',
+          borderRadius: '4px',
+          border: `1px solid ${theme.palette.mode === 'dark' ? '#30363d' : '#e2e8f0'}`,
+          boxShadow: 'none',
+        }}
+      >
         {/* Specs Group */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           <Typography variant="caption" sx={{ color: theme.palette.text.secondary, fontWeight: 'bold' }}>
